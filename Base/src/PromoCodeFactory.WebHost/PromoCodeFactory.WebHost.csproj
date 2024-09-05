@@ -11,8 +11,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PromoCodeFactory.Core\PromoCodeFactory.Core.csproj" />
-      <ProjectReference Include="..\PromoCodeFactory.DataAccess\PromoCodeFactory.DataAccess.csproj" />
+      <ProjectReference Include="..\PromoCodeFactory.BusinessLogic\PromoCodeFactory.BusinessLogic.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Request\Employee\" />
     </ItemGroup>
 
 </Project>

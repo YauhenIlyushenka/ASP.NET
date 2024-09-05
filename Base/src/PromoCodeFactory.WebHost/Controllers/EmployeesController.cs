@@ -1,74 +1,75 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using PromoCodeFactory.BusinessLogic.Services;
+using PromoCodeFactory.WebHost.Models.Response.Employee;
+using PromoCodeFactory.WebHost.Models.Response.Role;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using PromoCodeFactory.Core.Abstractions.Repositories;
-using PromoCodeFactory.Core.Domain.Administration;
-using PromoCodeFactory.WebHost.Models;
 
 namespace PromoCodeFactory.WebHost.Controllers
 {
-    /// <summary>
-    /// Сотрудники
-    /// </summary>
-    [ApiController]
-    [Route("api/v1/[controller]")]
-    public class EmployeesController : ControllerBase
-    {
-        private readonly IRepository<Employee> _employeeRepository;
+	/// <summary>
+	/// Employees
+	/// </summary>
+	[ApiController]
+	[Route("api/v1/[controller]")]
+	public class EmployeesController : ControllerBase
+	{
+		private readonly IEmployeeService _employeeService;
 
-        public EmployeesController(IRepository<Employee> employeeRepository)
-        {
-            _employeeRepository = employeeRepository;
-        }
+		public EmployeesController(IEmployeeService employeeService)
+		{
+			_employeeService = employeeService;
+		}
 
-        /// <summary>
-        /// Получить данные всех сотрудников
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<List<EmployeeShortResponse>> GetEmployeesAsync()
-        {
-            var employees = await _employeeRepository.GetAllAsync();
+		/// <summary>
+		/// Get all employees
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet]
+		public async Task<ActionResult<List<EmployeeShortResponse>>> GetEmployeesAsync()
+		{
+			var employees = await _employeeService.GetAllAsync();
 
-            var employeesModelList = employees.Select(x =>
-                new EmployeeShortResponse()
-                {
-                    Id = x.Id,
-                    Email = x.Email,
-                    FullName = x.FullName,
-                }).ToList();
+			var employeesModelList = employees.Select(x => new EmployeeShortResponse
+			{
+				Id = x.Id,
+				Email = x.Email,
+				FullName = x.FullName,
+			}).ToList();
 
-            return employeesModelList;
-        }
+			return Ok(employeesModelList);
+		}
 
-        /// <summary>
-        /// Получить данные сотрудника по Id
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<EmployeeResponse>> GetEmployeeByIdAsync(Guid id)
-        {
-            var employee = await _employeeRepository.GetByIdAsync(id);
+		/// <summary>
+		/// Get Employee By Id
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet("{id:guid}")]
+		public async Task<ActionResult<EmployeeResponse>> GetEmployeeByIdAsync(Guid id)
+		{
+			var employee = await _employeeService.GetByIdAsync(id);
 
-            if (employee == null)
-                return NotFound();
+			if (employee == null)
+			{
+				return NotFound();
+			}
 
-            var employeeModel = new EmployeeResponse()
-            {
-                Id = employee.Id,
-                Email = employee.Email,
-                Roles = employee.Roles.Select(x => new RoleItemResponse()
-                {
-                    Name = x.Name,
-                    Description = x.Description
-                }).ToList(),
-                FullName = employee.FullName,
-                AppliedPromocodesCount = employee.AppliedPromocodesCount
-            };
+			var employeeModel = new EmployeeResponse
+			{
+				Id = employee.Id,
+				Email = employee.Email,
+				Roles = employee.Roles.Select(x => new RoleItemResponse
+				{
+					Name = x.Name,
+					Description = x.Description
+				}).ToList(),
+				FullName = employee.FullName,
+				AppliedPromocodesCount = employee.AppliedPromocodesCount
+			};
 
-            return employeeModel;
-        }
-    }
+			return Ok(employeeModel);
+		}
+	}
 }
