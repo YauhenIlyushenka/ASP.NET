@@ -2,11 +2,14 @@
 
 namespace PromoCodeFactory.BusinessLogic.Models.Employee
 {
-	public class EmployeeResponseDto : BaseDto
+	public class EmployeeRequestExtendedDto
 	{
-		public string FullName { get; set; }
+		public Guid Id { get; set; }
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
 		public string Email { get; set; }
 		public int AppliedPromocodesCount { get; set; }
-		public List<RoleItemResponseDto> Roles { get; set; } 
+
+		public List<Guid> RoleIds { get; set; }
 	}
 }

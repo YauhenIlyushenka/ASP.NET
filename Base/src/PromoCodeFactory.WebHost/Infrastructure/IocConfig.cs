@@ -19,6 +19,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 		private static void AddBussinessLogicServices(this IServiceCollection services)
 		{
 			services.AddScoped<IEmployeeService, EmployeeService>();
+			services.AddScoped<IRoleService, RoleService>();
 		}
 
 		private static void AddDataAccessLayerServices(this IServiceCollection services)

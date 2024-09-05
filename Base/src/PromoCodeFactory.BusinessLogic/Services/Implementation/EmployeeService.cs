@@ -8,10 +8,14 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 	public class EmployeeService : IEmployeeService
 	{
 		private readonly IRepository<Employee> _employeeRepository;
-
-		public EmployeeService(IRepository<Employee> employeeRepository)
+		private readonly IRepository<Role> _roleRepository;
+		
+		public EmployeeService(
+			IRepository<Employee> employeeRepository,
+			IRepository<Role> roleRepository)
 		{
 			_employeeRepository = employeeRepository;
+			_roleRepository = roleRepository;
 		}
 
 		public async Task<List<EmployeeShortResponseDto>> GetAllAsync()
@@ -33,6 +37,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 					Email = employee.Email,
 					Roles = employee.Roles.Select(x => new RoleItemResponseDto
 					{
+						Id = employee.Id,
 						Name = x.Name,
 						Description = x.Description
 					}).ToList(),
@@ -42,5 +47,39 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				: null;
 		}
 
+		public async Task CreateAsync(EmpoyeeRequestDto model)
+		{
+			var role = (await _roleRepository.GetAllAsync()).Single(role => role.Id == model.RoleId);
+
+			await _employeeRepository.CreateAsync(new Employee
+			{
+				Id = Guid.NewGuid(),
+				FirstName = model.FirstName,
+				LastName = model.LastName,
+				Email = model.Email,
+				AppliedPromocodesCount = model.AppliedPromocodesCount,
+				Roles = new List<Role> { role }
+			});
+		}
+
+		public async Task UpdateAsync(EmployeeRequestExtendedDto model)
+		{
+			var employee = await _employeeRepository.GetByIdAsync(model.Id);
+			var roles = (await _roleRepository.GetAllAsync())
+				.Where(role => model.RoleIds.Contains(role.Id))
+				.ToList();
+
+			employee.FirstName = model.FirstName;
+			employee.LastName = model.LastName;
+			employee.Email = model.Email;
+			employee.AppliedPromocodesCount = model.AppliedPromocodesCount;
+			employee.Roles = roles;
+		}
+
+		public async Task DeleteAsync(Guid id)
+		{
+			var employee = await _employeeRepository.GetByIdAsync(id);
+			await _employeeRepository.DeleteAsync(employee);
+		}
 	}
 }

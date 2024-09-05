@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using PromoCodeFactory.BusinessLogic.Models.Employee;
 using PromoCodeFactory.BusinessLogic.Services;
+using PromoCodeFactory.WebHost.Models.Request.Employee;
 using PromoCodeFactory.WebHost.Models.Response.Employee;
 using PromoCodeFactory.WebHost.Models.Response.Role;
 using System;
@@ -25,29 +28,31 @@ namespace PromoCodeFactory.WebHost.Controllers
 
 		/// <summary>
 		/// Get all employees
-		/// </summary>
+		/// </summary>S
 		/// <returns></returns>
 		[HttpGet]
-		public async Task<ActionResult<List<EmployeeShortResponse>>> GetEmployeesAsync()
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EmployeeShortResponse>))]
+		public async Task<IActionResult> GetEmployeesAsync()
 		{
 			var employees = await _employeeService.GetAllAsync();
 
-			var employeesModelList = employees.Select(x => new EmployeeShortResponse
+			var employeesModels = employees.Select(x => new EmployeeShortResponse
 			{
 				Id = x.Id,
 				Email = x.Email,
 				FullName = x.FullName,
 			}).ToList();
 
-			return Ok(employeesModelList);
+			return Ok(employeesModels);
 		}
 
 		/// <summary>
-		/// Get Employee By Id
+		/// Get employee by Id
 		/// </summary>
 		/// <returns></returns>
 		[HttpGet("{id:guid}")]
-		public async Task<ActionResult<EmployeeResponse>> GetEmployeeByIdAsync(Guid id)
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeShortResponse))]
+		public async Task<IActionResult> GetEmployeeByIdAsync(Guid id)
 		{
 			var employee = await _employeeService.GetByIdAsync(id);
 
@@ -62,6 +67,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 				Email = employee.Email,
 				Roles = employee.Roles.Select(x => new RoleItemResponse
 				{
+					Id = x.Id,
 					Name = x.Name,
 					Description = x.Description
 				}).ToList(),
@@ -70,6 +76,60 @@ namespace PromoCodeFactory.WebHost.Controllers
 			};
 
 			return Ok(employeeModel);
+		}
+
+		/// <summary>
+		/// Create new employee
+		/// </summary>
+		/// <returns></returns>
+		[HttpPost]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<IActionResult> CreateEmployee([FromBody] EmployeeRequest model)
+		{
+			await _employeeService.CreateAsync(new EmpoyeeRequestDto
+			{
+				FirstName = model.FirstName,
+				LastName = model.LastName,
+				Email = model.Email,
+				AppliedPromocodesCount = model.AppliedPromocodesCount,
+				RoleId = model.RoleId
+			});
+
+			return Ok();
+		}
+
+		/// <summary>
+		/// Update employee
+		/// </summary>
+		/// <returns></returns>
+		[HttpPut]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeRequestExtended model)
+		{
+			await _employeeService.UpdateAsync(new EmployeeRequestExtendedDto
+			{
+				Id = model.Id,
+				FirstName = model.FirstName,
+				LastName = model.LastName,
+				Email = model.Email,
+				AppliedPromocodesCount = model.AppliedPromocodesCount,
+				RoleIds = model.RoleIds
+			});
+
+			return Ok();
+		}
+
+		/// <summary>
+		/// Delete employee by Id
+		/// </summary>
+		/// <returns></returns>
+		[HttpDelete("{id:guid}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<IActionResult> DeleteEmployee(Guid id)
+		{
+			await _employeeService.DeleteAsync(id);
+
+			return Ok();
 		}
 	}
 }

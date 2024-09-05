@@ -25,5 +25,17 @@ namespace PromoCodeFactory.DataAccess.Repositories
 		{
 			return Task.FromResult(Data.FirstOrDefault(x => x.Id == id));
 		}
+
+		public Task CreateAsync(T entity)
+		{
+			Data.Add(entity);
+			return Task.CompletedTask;
+		}
+
+		public Task DeleteAsync(T entity)
+		{
+			Data.Remove(entity);
+			return Task.CompletedTask;
+		}
 	}
 }
