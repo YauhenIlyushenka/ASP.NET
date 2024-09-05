@@ -49,7 +49,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task CreateAsync(EmpoyeeRequestDto model)
 		{
-			var role = (await _roleRepository.GetAllAsync()).Single(role => role.Id == model.RoleId);
+			var role = (await _roleRepository.GetAllAsync()).SingleOrDefault(role => role.Id == model.RoleId);
 
 			await _employeeRepository.CreateAsync(new Employee
 			{
