@@ -6,7 +6,7 @@ namespace PromoCodeFactory.BusinessLogic.Services
 	{
 		Task<List<EmployeeShortResponseDto>> GetAllAsync();
 
-		Task<EmployeeResponseDto?> GetByIdAsync(Guid id);
+		Task<EmployeeResponseDto> GetByIdAsync(Guid id);
 
 		Task CreateAsync(EmpoyeeRequestDto model);
 

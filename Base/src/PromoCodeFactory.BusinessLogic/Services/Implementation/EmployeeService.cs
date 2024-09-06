@@ -9,7 +9,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 	{
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly IRepository<Role> _roleRepository;
-		
+
 		public EmployeeService(
 			IRepository<Employee> employeeRepository,
 			IRepository<Role> roleRepository)
@@ -26,25 +26,28 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				FullName = x.FullName,
 			}).ToList();
 
-		public async Task<EmployeeResponseDto?> GetByIdAsync(Guid id)
+		public async Task<EmployeeResponseDto> GetByIdAsync(Guid id)
 		{
 			var employee = await _employeeRepository.GetByIdAsync(id);
 
-			return employee != null
-				? new EmployeeResponseDto
+			if (employee == null)
+			{
+				throw new Exception();
+			}
+
+			return new EmployeeResponseDto
+			{
+				Id = employee.Id,
+				Email = employee.Email,
+				Roles = employee.Roles.Select(x => new RoleItemResponseDto
 				{
 					Id = employee.Id,
-					Email = employee.Email,
-					Roles = employee.Roles.Select(x => new RoleItemResponseDto
-					{
-						Id = employee.Id,
-						Name = x.Name,
-						Description = x.Description
-					}).ToList(),
-					FullName = employee.FullName,
-					AppliedPromocodesCount = employee.AppliedPromocodesCount
-				}
-				: null;
+					Name = x.Name,
+					Description = x.Description
+				}).ToList(),
+				FullName = employee.FullName,
+				AppliedPromocodesCount = employee.AppliedPromocodesCount
+			};
 		}
 
 		public async Task CreateAsync(EmpoyeeRequestDto model)
@@ -65,6 +68,12 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		public async Task UpdateAsync(EmployeeRequestExtendedDto model)
 		{
 			var employee = await _employeeRepository.GetByIdAsync(model.Id);
+
+			if (employee == null)
+			{
+				throw new Exception();
+			}
+
 			var roles = (await _roleRepository.GetAllAsync())
 				.Where(role => model.RoleIds.Contains(role.Id))
 				.ToList();
@@ -79,6 +88,12 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		public async Task DeleteAsync(Guid id)
 		{
 			var employee = await _employeeRepository.GetByIdAsync(id);
+
+			if (employee == null)
+			{
+				throw new Exception();
+			}
+
 			await _employeeRepository.DeleteAsync(employee);
 		}
 	}

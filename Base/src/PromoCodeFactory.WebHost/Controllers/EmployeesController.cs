@@ -35,7 +35,6 @@ namespace PromoCodeFactory.WebHost.Controllers
 		public async Task<IActionResult> GetEmployeesAsync()
 		{
 			var employees = await _employeeService.GetAllAsync();
-
 			var employeesModels = employees.Select(x => new EmployeeShortResponse
 			{
 				Id = x.Id,
@@ -55,12 +54,6 @@ namespace PromoCodeFactory.WebHost.Controllers
 		public async Task<IActionResult> GetEmployeeByIdAsync(Guid id)
 		{
 			var employee = await _employeeService.GetByIdAsync(id);
-
-			if (employee == null)
-			{
-				return NotFound();
-			}
-
 			var employeeModel = new EmployeeResponse
 			{
 				Id = employee.Id,
