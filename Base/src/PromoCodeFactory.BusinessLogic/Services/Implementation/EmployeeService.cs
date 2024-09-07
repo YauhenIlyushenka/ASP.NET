@@ -2,6 +2,7 @@
 using PromoCodeFactory.BusinessLogic.Models.Role;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
+using PromoCodeFactory.Core.Exceptions;
 
 namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 {
@@ -28,12 +29,8 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<EmployeeResponseDto> GetByIdAsync(Guid id)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(id);
-
-			if (employee == null)
-			{
-				throw new Exception();
-			}
+			var employee = await _employeeRepository.GetByIdAsync(id)
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id));
 
 			return new EmployeeResponseDto
 			{
@@ -52,7 +49,8 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task CreateAsync(EmpoyeeRequestDto model)
 		{
-			var role = (await _roleRepository.GetAllAsync()).SingleOrDefault(role => role.Id == model.RoleId);
+			var role = (await _roleRepository.GetAllAsync())
+				.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
 
 			await _employeeRepository.CreateAsync(new Employee
 			{
@@ -67,34 +65,29 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task UpdateAsync(EmployeeRequestExtendedDto model)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(model.Id);
-
-			if (employee == null)
-			{
-				throw new Exception();
-			}
+			var employee = await _employeeRepository.GetByIdAsync(model.Id)
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(model.Id));
 
 			var roles = (await _roleRepository.GetAllAsync())
-				.Where(role => model.RoleIds.Contains(role.Id))
+				.Where(role => model.Roles.Select(x => x.ToString().ToLower()).Contains(role.Name.ToLower()))
 				.ToList();
 
-			employee.FirstName = model.FirstName;
-			employee.LastName = model.LastName;
-			employee.Email = model.Email;
-			employee.AppliedPromocodesCount = model.AppliedPromocodesCount;
-			employee.Roles = roles;
+			employee.Update(
+				model.FirstName,
+				model.LastName,
+				model.Email,
+				model.AppliedPromocodesCount,
+				roles);
 		}
 
 		public async Task DeleteAsync(Guid id)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(id);
-
-			if (employee == null)
-			{
-				throw new Exception();
-			}
+			var employee = await _employeeRepository.GetByIdAsync(id)
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id));
 
 			await _employeeRepository.DeleteAsync(employee);
 		}
+
+		private string FormatFullNotFoundErrorMessage(Guid id) => $"The employee with Id {id} has not been found.";
 	}
 }

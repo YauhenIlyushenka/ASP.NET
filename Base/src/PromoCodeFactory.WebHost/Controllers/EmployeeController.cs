@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.BusinessLogic.Models.Employee;
 using PromoCodeFactory.BusinessLogic.Services;
 using PromoCodeFactory.WebHost.Models.Request.Employee;
@@ -13,15 +12,15 @@ using System.Threading.Tasks;
 namespace PromoCodeFactory.WebHost.Controllers
 {
 	/// <summary>
-	/// Employees
+	/// Employee
 	/// </summary>
 	[ApiController]
 	[Route("api/v1/[controller]")]
-	public class EmployeesController : ControllerBase
+	public class EmployeeController
 	{
 		private readonly IEmployeeService _employeeService;
 
-		public EmployeesController(IEmployeeService employeeService)
+		public EmployeeController(IEmployeeService employeeService)
 		{
 			_employeeService = employeeService;
 		}
@@ -31,8 +30,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>S
 		/// <returns></returns>
 		[HttpGet]
-		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EmployeeShortResponse>))]
-		public async Task<IActionResult> GetEmployeesAsync()
+		public async Task<List<EmployeeShortResponse>> GetEmployeesAsync()
 		{
 			var employees = await _employeeService.GetAllAsync();
 			var employeesModels = employees.Select(x => new EmployeeShortResponse
@@ -42,7 +40,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 				FullName = x.FullName,
 			}).ToList();
 
-			return Ok(employeesModels);
+			return employeesModels;
 		}
 
 		/// <summary>
@@ -50,8 +48,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpGet("{id:guid}")]
-		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeShortResponse))]
-		public async Task<IActionResult> GetEmployeeByIdAsync(Guid id)
+		public async Task<EmployeeResponse> GetEmployeeByIdAsync(Guid id)
 		{
 			var employee = await _employeeService.GetByIdAsync(id);
 			var employeeModel = new EmployeeResponse
@@ -68,7 +65,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 				AppliedPromocodesCount = employee.AppliedPromocodesCount
 			};
 
-			return Ok(employeeModel);
+			return employeeModel;
 		}
 
 		/// <summary>
@@ -76,8 +73,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPost]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<IActionResult> CreateEmployee([FromBody] EmployeeRequest model)
+		public async Task CreateEmployee([FromBody] EmployeeRequest model)
 		{
 			await _employeeService.CreateAsync(new EmpoyeeRequestDto
 			{
@@ -85,10 +81,8 @@ namespace PromoCodeFactory.WebHost.Controllers
 				LastName = model.LastName,
 				Email = model.Email,
 				AppliedPromocodesCount = model.AppliedPromocodesCount,
-				RoleId = model.RoleId
+				Role = model.Role
 			});
-
-			return Ok();
 		}
 
 		/// <summary>
@@ -96,8 +90,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPut]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeRequestExtended model)
+		public async Task UpdateEmployee([FromBody] EmployeeRequestExtended model)
 		{
 			await _employeeService.UpdateAsync(new EmployeeRequestExtendedDto
 			{
@@ -106,10 +99,8 @@ namespace PromoCodeFactory.WebHost.Controllers
 				LastName = model.LastName,
 				Email = model.Email,
 				AppliedPromocodesCount = model.AppliedPromocodesCount,
-				RoleIds = model.RoleIds
+				Roles = model.Roles
 			});
-
-			return Ok();
 		}
 
 		/// <summary>
@@ -117,12 +108,9 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpDelete("{id:guid}")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<IActionResult> DeleteEmployee(Guid id)
+		public async Task DeleteEmployee(Guid id)
 		{
 			await _employeeService.DeleteAsync(id);
-
-			return Ok();
 		}
 	}
 }

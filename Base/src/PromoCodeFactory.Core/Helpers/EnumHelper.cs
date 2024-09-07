@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace PromoCodeFactory.Core.Helpers
 {
@@ -15,9 +17,29 @@ namespace PromoCodeFactory.Core.Helpers
 			var data = value.ToString();
 
 			var field = value.GetType().GetField(data);
-			var attributes = (DescriptionAttribute[])field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+			var attribute = (DescriptionAttribute)field.GetCustomAttribute(typeof(DescriptionAttribute), false);
 
-			return attributes.Length > 0 ? attributes[0].Description : string.Empty;
+			return attribute != null ? attribute.Description : string.Empty;
+		}
+
+		public static List<TEnum> ToList<TEnum>() where TEnum : struct
+		{
+			var enumType = typeof(TEnum);
+
+			if (enumType.BaseType != typeof(Enum))
+			{
+				throw new ArgumentException("TEnum should be of type System.Enum");
+			}
+
+			var enumValueArray = Enum.GetValues(enumType);
+			var enumValueList = new List<TEnum>(enumValueArray.Length);
+
+			foreach (int value in enumValueArray)
+			{
+				enumValueList.Add((TEnum)Enum.Parse(enumType, value.ToString()));
+			}
+
+			return enumValueList;
 		}
 	}
 }

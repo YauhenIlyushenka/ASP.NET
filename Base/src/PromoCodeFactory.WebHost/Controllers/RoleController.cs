@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.BusinessLogic.Services;
 using PromoCodeFactory.WebHost.Models.Response.Role;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +12,11 @@ namespace PromoCodeFactory.WebHost.Controllers
 	/// </summary>
 	[ApiController]
 	[Route("api/v1/[controller]")]
-	public class RolesController : ControllerBase
+	public class RoleController
 	{
 		private readonly IRoleService _roleService;
 
-		public RolesController(IRoleService roleService)
+		public RoleController(IRoleService roleService)
 		{
 			_roleService = roleService;
 		}
@@ -28,8 +26,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpGet]
-		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RoleItemResponse>))]
-		public async Task<IActionResult> GetRolesAsync()
+		public async Task<List<RoleItemResponse>> GetRolesAsync()
 		{
 			var roles = await _roleService.GetAllAsync();
 			var rolesModel = roles.Select(x => new RoleItemResponse
@@ -39,7 +36,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 				Description = x.Description
 			}).ToList();
 
-			return Ok(rolesModel);
+			return rolesModel;
 		}
 	}
 }
