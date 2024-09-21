@@ -36,18 +36,18 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 			{
 				Id = employee.Id,
 				Email = employee.Email,
-				Roles = employee.Roles.Select(x => new RoleItemResponseDto
+				Role = new RoleItemResponseDto
 				{
-					Id = employee.Id,
-					Name = x.Name,
-					Description = x.Description
-				}).ToList(),
+					Id = employee.Role.Id,
+					Name = employee.Role.Name,
+					Description = employee.Role.Description,
+				},
 				FullName = employee.FullName,
 				AppliedPromocodesCount = employee.AppliedPromocodesCount
 			};
 		}
 
-		public async Task CreateAsync(EmpoyeeRequestDto model)
+		public async Task CreateAsync(EmployeeRequestDto model)
 		{
 			var role = (await _roleRepository.GetAllAsync())
 				.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
@@ -59,25 +59,24 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				LastName = model.LastName,
 				Email = model.Email,
 				AppliedPromocodesCount = model.AppliedPromocodesCount,
-				Roles = new List<Role> { role }
+				Role = role,
 			});
 		}
 
-		public async Task UpdateAsync(EmployeeRequestExtendedDto model)
+		public async Task UpdateAsync(Guid id, EmployeeRequestDto model)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(model.Id)
-				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(model.Id));
+			var employee = await _employeeRepository.GetByIdAsync(id)
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id));
 
-			var roles = (await _roleRepository.GetAllAsync())
-				.Where(role => model.Roles.Select(x => x.ToString().ToLower()).Contains(role.Name.ToLower()))
-				.ToList();
+			var role = (await _roleRepository.GetAllAsync())
+				.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
 
 			employee.Update(
 				model.FirstName,
 				model.LastName,
 				model.Email,
 				model.AppliedPromocodesCount,
-				roles);
+				role);
 		}
 
 		public async Task DeleteAsync(Guid id)

@@ -13,20 +13,20 @@ namespace PromoCodeFactory.Core.Domain.Administration
 
 		public int AppliedPromocodesCount { get; set; }
 
-		public List<Role> Roles { get; set; }
+		public Role Role { get; set; }
 
 		public void Update(
 			string firstName,
 			string lastName,
 			string email,
 			int appliedPromocodesCount,
-			List<Role> roles)
+			Role role)
 		{
 			FirstName = firstName;
 			LastName = lastName;
 			Email = email;
 			AppliedPromocodesCount = appliedPromocodesCount;
-			Roles = roles;
+			Role = role;
 		}
 	}
 }

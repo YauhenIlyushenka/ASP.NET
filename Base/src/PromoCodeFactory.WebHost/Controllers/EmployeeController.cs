@@ -55,12 +55,12 @@ namespace PromoCodeFactory.WebHost.Controllers
 			{
 				Id = employee.Id,
 				Email = employee.Email,
-				Roles = employee.Roles.Select(x => new RoleItemResponse
+				Role = new RoleItemResponse
 				{
-					Id = x.Id,
-					Name = x.Name,
-					Description = x.Description
-				}).ToList(),
+					Id = employee.Role.Id,
+					Name = employee.Role.Name,
+					Description = employee.Role.Description
+				},
 				FullName = employee.FullName,
 				AppliedPromocodesCount = employee.AppliedPromocodesCount
 			};
@@ -75,7 +75,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		[HttpPost]
 		public async Task CreateEmployee([FromBody] EmployeeRequest model)
 		{
-			await _employeeService.CreateAsync(new EmpoyeeRequestDto
+			await _employeeService.CreateAsync(new EmployeeRequestDto
 			{
 				FirstName = model.FirstName,
 				LastName = model.LastName,
@@ -89,17 +89,16 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// Update employee
 		/// </summary>
 		/// <returns></returns>
-		[HttpPut]
-		public async Task UpdateEmployee([FromBody] EmployeeRequestExtended model)
+		[HttpPut("{id:guid}")]
+		public async Task UpdateEmployee([FromRoute] Guid id, [FromBody] EmployeeRequest model)
 		{
-			await _employeeService.UpdateAsync(new EmployeeRequestExtendedDto
+			await _employeeService.UpdateAsync(id, new EmployeeRequestDto
 			{
-				Id = model.Id,
 				FirstName = model.FirstName,
 				LastName = model.LastName,
 				Email = model.Email,
 				AppliedPromocodesCount = model.AppliedPromocodesCount,
-				Roles = model.Roles
+				Role = model.Role
 			});
 		}
 
