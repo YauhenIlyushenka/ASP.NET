@@ -1,9 +1,13 @@
-﻿namespace PromoCodeFactory.Core.Domain.Administration
-{
-    public class Role : BaseEntity
-    {
-        public string Name { get; set; }
+﻿using System;
 
-        public string Description { get; set; }
-    }
+namespace PromoCodeFactory.Core.Domain.Administration
+{
+	public class Role : IEntity<Guid>
+	{
+		public Guid Id { get; set; }
+		public string Name { get; set; }
+		public string Description { get; set; }
+		public Guid EmployeeId { get; set; }
+		public Employee Employee { get; set; }
+	}
 }

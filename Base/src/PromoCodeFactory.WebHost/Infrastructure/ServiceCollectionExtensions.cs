@@ -1,10 +1,17 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using PromoCodeFactory.WebHost.Infrastructure.Validators;
 
-namespace PromoCodeFactory.WebHost.Infrastructure.Swagger
+namespace PromoCodeFactory.WebHost.Infrastructure
 {
 	public static class ServiceCollectionExtensions
 	{
+		public static void AddValidators(this IServiceCollection services)
+		{
+			services.AddValidatorsFromAssemblyContaining<EmployeeValidator>();
+		}
+
 		public static void AddSwaggerServices(this IServiceCollection services)
 		{
 			services.AddOpenApiDocument(options =>

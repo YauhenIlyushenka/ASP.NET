@@ -73,9 +73,9 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPost]
-		public async Task CreateEmployee([FromBody] EmployeeRequest model)
+		public async Task<EmployeeResponse> CreateEmployee([FromBody] EmployeeRequest model)
 		{
-			await _employeeService.CreateAsync(new EmployeeRequestDto
+			var employee = await _employeeService.CreateAsync(new EmployeeRequestDto
 			{
 				FirstName = model.FirstName,
 				LastName = model.LastName,
@@ -83,6 +83,22 @@ namespace PromoCodeFactory.WebHost.Controllers
 				AppliedPromocodesCount = model.AppliedPromocodesCount,
 				Role = model.Role
 			});
+
+			var employeeModel = new EmployeeResponse
+			{
+				Id = employee.Id,
+				Email = employee.Email,
+				Role = new RoleItemResponse
+				{
+					Id = employee.Role.Id,
+					Name = employee.Role.Name,
+					Description = employee.Role.Description
+				},
+				FullName = employee.FullName,
+				AppliedPromocodesCount = employee.AppliedPromocodesCount
+			};
+
+			return employeeModel;
 		}
 
 		/// <summary>

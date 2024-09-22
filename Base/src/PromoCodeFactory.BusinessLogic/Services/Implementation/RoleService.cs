@@ -6,9 +6,9 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 {
 	public class RoleService : IRoleService
 	{
-		private readonly IRepository<Role> _roleRepository;
+		private readonly IRepository<Role, Guid> _roleRepository;
 
-		public RoleService(IRepository<Role> rolesRepository)
+		public RoleService(IRepository<Role, Guid> rolesRepository)
 		{
 			_roleRepository = rolesRepository;
 		}

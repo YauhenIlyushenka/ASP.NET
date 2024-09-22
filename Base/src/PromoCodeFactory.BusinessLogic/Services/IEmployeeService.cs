@@ -8,7 +8,7 @@ namespace PromoCodeFactory.BusinessLogic.Services
 
 		Task<EmployeeResponseDto> GetByIdAsync(Guid id);
 
-		Task CreateAsync(EmployeeRequestDto model);
+		Task<EmployeeResponseDto> CreateAsync(EmployeeRequestDto model);
 
 		Task UpdateAsync(Guid id, EmployeeRequestDto model);
 

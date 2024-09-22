@@ -8,12 +8,12 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 {
 	public class EmployeeService : IEmployeeService
 	{
-		private readonly IRepository<Employee> _employeeRepository;
-		private readonly IRepository<Role> _roleRepository;
+		private readonly IRepository<Employee, Guid> _employeeRepository;
+		private readonly IRepository<Role, Guid> _roleRepository;
 
 		public EmployeeService(
-			IRepository<Employee> employeeRepository,
-			IRepository<Role> roleRepository)
+			IRepository<Employee, Guid> employeeRepository,
+			IRepository<Role, Guid> roleRepository)
 		{
 			_employeeRepository = employeeRepository;
 			_roleRepository = roleRepository;
@@ -47,12 +47,12 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 			};
 		}
 
-		public async Task CreateAsync(EmployeeRequestDto model)
+		public async Task<EmployeeResponseDto> CreateAsync(EmployeeRequestDto model)
 		{
 			var role = (await _roleRepository.GetAllAsync())
 				.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
 
-			await _employeeRepository.CreateAsync(new Employee
+			var employee = await _employeeRepository.AddAsync(new Employee
 			{
 				Id = Guid.NewGuid(),
 				FirstName = model.FirstName,
@@ -61,6 +61,22 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				AppliedPromocodesCount = model.AppliedPromocodesCount,
 				Role = role,
 			});
+
+			await _employeeRepository.SaveChangesAsync();
+
+			return new EmployeeResponseDto
+			{
+				Id = employee.Id,
+				Email = employee.Email,
+				Role = new RoleItemResponseDto
+				{
+					Id = employee.Role.Id,
+					Name = employee.Role.Name,
+					Description = employee.Role.Description,
+				},
+				FullName = employee.FullName,
+				AppliedPromocodesCount = employee.AppliedPromocodesCount
+			};
 		}
 
 		public async Task UpdateAsync(Guid id, EmployeeRequestDto model)
@@ -71,12 +87,14 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 			var role = (await _roleRepository.GetAllAsync())
 				.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
 
-			employee.Update(
-				model.FirstName,
-				model.LastName,
-				model.Email,
-				model.AppliedPromocodesCount,
-				role);
+			employee.FirstName = model.FirstName;
+			employee.LastName = model.LastName;
+			employee.Email = model.Email;
+			employee.AppliedPromocodesCount = model.AppliedPromocodesCount;
+			employee.Role = role;
+
+			_employeeRepository.Update(employee);
+			await _employeeRepository.SaveChangesAsync();
 		}
 
 		public async Task DeleteAsync(Guid id)
@@ -84,7 +102,8 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 			var employee = await _employeeRepository.GetByIdAsync(id)
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id));
 
-			await _employeeRepository.DeleteAsync(employee);
+			_employeeRepository.Delete(employee);
+			await _employeeRepository.SaveChangesAsync();
 		}
 
 		private string FormatFullNotFoundErrorMessage(Guid id) => $"The employee with Id {id} has not been found.";
