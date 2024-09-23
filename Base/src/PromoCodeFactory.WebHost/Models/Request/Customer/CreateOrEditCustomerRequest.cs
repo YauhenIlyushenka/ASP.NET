@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using PromoCodeFactory.Core.Domain.Enums;
+using System.Collections.Generic;
 
 namespace PromoCodeFactory.WebHost.Models.Request.Customer
 {
-	public class CreateOrEditCustomerRequest
+	public class CreateOrEditCustomerRequest : BaseCommonRequest
 	{
-		public string FirstName { get; set; }
-		public string LastName { get; set; }
-		public string Email { get; set; }
-		public List<Guid> PreferenceIds { get; set; }
+		public List<Preference> Preferences { get; set; }
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace PromoCodeFactory.Core.Domain.Administration.Enum
+namespace PromoCodeFactory.Core.Domain.Enums
 {
 	public enum Role
 	{

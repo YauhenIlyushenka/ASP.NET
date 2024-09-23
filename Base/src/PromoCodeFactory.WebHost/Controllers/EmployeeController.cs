@@ -48,7 +48,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpGet("{id:guid}")]
-		public async Task<EmployeeResponse> GetEmployeeByIdAsync(Guid id)
+		public async Task<EmployeeResponse> GetEmployeeByIdAsync([FromRoute] Guid id)
 		{
 			var employee = await _employeeService.GetByIdAsync(id);
 			var employeeModel = new EmployeeResponse
@@ -73,7 +73,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPost]
-		public async Task<EmployeeResponse> CreateEmployee([FromBody] EmployeeRequest model)
+		public async Task<EmployeeResponse> CreateEmployeeAsync([FromBody] EmployeeRequest model)
 		{
 			var employee = await _employeeService.CreateAsync(new EmployeeRequestDto
 			{
@@ -106,7 +106,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPut("{id:guid}")]
-		public async Task UpdateEmployee([FromRoute] Guid id, [FromBody] EmployeeRequest model)
+		public async Task UpdateEmployeeAsync([FromRoute] Guid id, [FromBody] EmployeeRequest model)
 		{
 			await _employeeService.UpdateAsync(id, new EmployeeRequestDto
 			{
@@ -123,7 +123,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpDelete("{id:guid}")]
-		public async Task DeleteEmployee(Guid id)
+		public async Task DeleteEmployeeAsync([FromRoute] Guid id)
 		{
 			await _employeeService.DeleteAsync(id);
 		}

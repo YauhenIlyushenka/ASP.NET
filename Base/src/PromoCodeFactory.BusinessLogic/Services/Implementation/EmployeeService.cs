@@ -6,7 +6,7 @@ using PromoCodeFactory.Core.Exceptions;
 
 namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 {
-	public class EmployeeService : IEmployeeService
+	public class EmployeeService : BaseService, IEmployeeService
 	{
 		private readonly IRepository<Employee, Guid> _employeeRepository;
 		private readonly IRepository<Role, Guid> _roleRepository;
@@ -30,7 +30,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		public async Task<EmployeeResponseDto> GetByIdAsync(Guid id)
 		{
 			var employee = await _employeeRepository.GetByIdAsync(id)
-				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id));
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
 			return new EmployeeResponseDto
 			{
@@ -54,7 +54,6 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 			var employee = await _employeeRepository.AddAsync(new Employee
 			{
-				Id = Guid.NewGuid(),
 				FirstName = model.FirstName,
 				LastName = model.LastName,
 				Email = model.Email,
@@ -82,7 +81,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		public async Task UpdateAsync(Guid id, EmployeeRequestDto model)
 		{
 			var employee = await _employeeRepository.GetByIdAsync(id)
-				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id));
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
 			var role = (await _roleRepository.GetAllAsync())
 				.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
@@ -100,12 +99,10 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		public async Task DeleteAsync(Guid id)
 		{
 			var employee = await _employeeRepository.GetByIdAsync(id)
-				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id));
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
 			_employeeRepository.Delete(employee);
 			await _employeeRepository.SaveChangesAsync();
 		}
-
-		private string FormatFullNotFoundErrorMessage(Guid id) => $"The employee with Id {id} has not been found.";
 	}
 }

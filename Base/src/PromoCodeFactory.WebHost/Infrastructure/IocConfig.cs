@@ -3,6 +3,7 @@ using PromoCodeFactory.BusinessLogic.Services;
 using PromoCodeFactory.BusinessLogic.Services.Implementation;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
+using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.DataAccess.Repositories;
 using System;
 
@@ -20,12 +21,14 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 		{
 			services.AddScoped<IEmployeeService, EmployeeService>();
 			services.AddScoped<IRoleService, RoleService>();
+			services.AddScoped<ICustomerService, CustomerService>();
 		}
 
 		private static void AddDataAccessLayerRepositories(this IServiceCollection services)
 		{
 			services.AddScoped<IRepository<Employee, Guid>, EmployeeRepository>();
 			services.AddScoped<IRepository<Role, Guid>, RoleRepository>();
+			services.AddScoped<IRepository<Customer, Guid>, CustomerRepository>();
 		}
 	}
 }

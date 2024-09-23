@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using PromoCodeFactory.WebHost.Infrastructure.Validators;
+using PromoCodeFactory.WebHost.Models.Request;
 
 namespace PromoCodeFactory.WebHost.Infrastructure
 {
@@ -9,7 +10,9 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 	{
 		public static void AddValidators(this IServiceCollection services)
 		{
+			services.AddValidatorsFromAssemblyContaining<BaseCommonValidator<BaseCommonRequest>>();
 			services.AddValidatorsFromAssemblyContaining<EmployeeValidator>();
+			services.AddValidatorsFromAssemblyContaining<CustomerValidator>();
 		}
 
 		public static void AddSwaggerServices(this IServiceCollection services)

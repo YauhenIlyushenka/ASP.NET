@@ -1,4 +1,4 @@
-﻿using EnumRole = PromoCodeFactory.Core.Domain.Administration.Enum.Role;
+﻿using EnumRole = PromoCodeFactory.Core.Domain.Enums.Role;
 
 namespace PromoCodeFactory.BusinessLogic.Models.Employee
 {
