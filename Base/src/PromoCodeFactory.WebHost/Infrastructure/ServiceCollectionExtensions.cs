@@ -1,8 +1,11 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PromoCodeFactory.DataAccess;
 using PromoCodeFactory.WebHost.Infrastructure.Validators;
 using PromoCodeFactory.WebHost.Models.Request;
+using System;
 
 namespace PromoCodeFactory.WebHost.Infrastructure
 {
@@ -13,6 +16,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			services.AddValidatorsFromAssemblyContaining<BaseCommonValidator<BaseCommonRequest>>();
 			services.AddValidatorsFromAssemblyContaining<EmployeeValidator>();
 			services.AddValidatorsFromAssemblyContaining<CustomerValidator>();
+			services.AddValidatorsFromAssemblyContaining<PromocodeValidator>();
 		}
 
 		public static void AddSwaggerServices(this IServiceCollection services)
@@ -31,6 +35,22 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			{
 				x.DocExpansion = "list";
 			});
+		}
+
+		public static void MigrateDatabase<T>(this IApplicationBuilder application) where T : DatabaseContext
+		{
+			var scope = application.ApplicationServices.CreateScope();
+			var dbContext = scope.ServiceProvider.GetService<T>();
+
+			dbContext.Database.EnsureDeleted();
+			dbContext.Database.Migrate();
+			Seed(scope.ServiceProvider);
+		}
+
+		private static void Seed(IServiceProvider serviceProvider)
+		{
+			using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+			var dbContext = scope.ServiceProvider.GetService<DatabaseContext>();
 		}
 	}
 }

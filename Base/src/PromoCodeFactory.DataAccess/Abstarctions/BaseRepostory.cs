@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,11 +21,42 @@ namespace PromoCodeFactory.DataAccess.Abstarctions
 			_entitySet = Context.Set<T>();
 		}
 
-		public virtual async Task<List<T>> GetAllAsync(bool asNoTracking = false)
-			=> await GetAll().ToListAsync();
+		public virtual async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, bool asNoTracking = false)
+		{
+			IQueryable<T> query = _entitySet;
 
-		public virtual async Task<T> GetByIdAsync(TId id)
-			=> await _entitySet.FindAsync(id);
+			if (filter != null)
+			{
+				query = query.Where(filter);
+			}
+
+			if (asNoTracking)
+			{
+				query = query.AsNoTracking();
+			}
+
+			return await query.ToListAsync();
+		}
+
+		public virtual async Task<T> GetByIdAsync(Expression<Func<T, bool>> filter, string includes = null)
+		{
+			IQueryable<T> query = _entitySet;
+
+			if (filter != null)
+			{
+				query = query.Where(filter);
+			}
+
+			if (includes == null || includes.Length == 0)
+			{
+				foreach (var includeEntity in includes.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					query = query.Include(includeEntity);
+				}
+			}
+			
+			return await query.SingleOrDefaultAsync();
+		}
 
 		public virtual async Task<T> AddAsync(T entity)
 			=> (await _entitySet.AddAsync(entity)).Entity;
@@ -45,11 +78,5 @@ namespace PromoCodeFactory.DataAccess.Abstarctions
 
 		public virtual async Task SaveChangesAsync(CancellationToken cancellationToken = default)
 			=> await Context.SaveChangesAsync(cancellationToken);
-
-		private IQueryable<T> GetAll(bool asNoTracking = false)
-		{
-			return asNoTracking ? _entitySet.AsNoTracking() : _entitySet;
-		}
-
 	}
 }

@@ -1,4 +1,4 @@
-﻿using PromoCodeFactory.Core.Domain.Enums;
+﻿using EnumPreference = PromoCodeFactory.Core.Domain.Enums.Preference;
 
 namespace PromoCodeFactory.BusinessLogic.Models.Customer
 {
@@ -7,6 +7,6 @@ namespace PromoCodeFactory.BusinessLogic.Models.Customer
 		public string FirstName { get; init; }
 		public string LastName { get; init; }
 		public string Email { get; init; }
-		public List<Preference> Preferences { get; init; }
+		public List<EnumPreference> Preferences { get; init; }
 	}
 }

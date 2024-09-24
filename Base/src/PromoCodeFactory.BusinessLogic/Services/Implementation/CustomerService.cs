@@ -1,18 +1,24 @@
 ﻿using PromoCodeFactory.BusinessLogic.Models.Customer;
+using PromoCodeFactory.BusinessLogic.Models.Preference;
 using PromoCodeFactory.BusinessLogic.Models.PromoCode;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.Core.Exceptions;
+using PromoCodeFactory.Core.Helpers;
 
 namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 {
 	public class CustomerService : BaseService, ICustomerService
 	{
 		private readonly IRepository<Customer, Guid> _customerRepository;
+		private readonly IRepository<Preference, Guid> _preferenceRepository;
 
-		public CustomerService(IRepository<Customer, Guid> customerRepository)
+		public CustomerService(
+			IRepository<Customer, Guid> customerRepository,
+			IRepository<Preference, Guid> preferenceRepository)
 		{
 			_customerRepository = customerRepository;
+			_preferenceRepository = preferenceRepository;
 		}
 
 		public async Task<List<CustomerShortResponseDto>> GetAllAsync()
@@ -26,7 +32,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<CustomerResponseDto> GetByIdAsync(Guid id)
 		{
-			var customer = await _customerRepository.GetByIdAsync(id)
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer)}.{nameof(Customer.PromoCodes)}") 
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
 			return new CustomerResponseDto
@@ -35,28 +41,43 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				FirstName = customer.FirstName,
 				LastName = customer.LastName,
 				Email = customer.Email,
-				PromoCodes = new List<PromoCodeShortResponseDto>
+				PromoCodes = customer.PromoCodes.Select(x => new PromoCodeShortResponseDto
 				{
-
-				}
+					Id = x.Id,
+					Code = x.Code,
+					BeginDate = x.BeginDate.ToDateString(),
+					EndDate = x.EndDate.ToDateString(),
+					PartnerName = x.PartnerName,
+					ServiceInfo = x.ServiceInfo,
+				}).ToList()
 			};
 		}
 
 		public async Task<CustomerResponseDto> CreateAsync(CreateOrEditCustomerRequestDto model)
 		{
-			//var preferences = (await _roleRepository.GetAllAsync())
-			//	.Where(preference => model.Preferences.Select(x => x.ToString().ToLower()).Contains(preference.Name.ToLower()))
-			//	.ToList();
+			var preferences = (await _preferenceRepository.GetAllAsync())
+				.Where(preference => model.Preferences.Select(x => x.ToString().ToLower()).Contains(preference.Name.ToLower()))
+				.ToList();
 
 			var customer = await _customerRepository.AddAsync(new Customer
 			{
 				FirstName = model.FirstName,
 				LastName = model.LastName,
 				Email = model.Email,
-				//Preferences 
+				Preferences = preferences,
 			});
 
 			await _customerRepository.SaveChangesAsync();
+
+			//customer.Preferences = preferences;
+
+			foreach (var preference in preferences)
+			{
+				preference.Customers.Add(customer);
+				_preferenceRepository.Update(preference);
+			}
+
+			await _preferenceRepository.SaveChangesAsync();
 
 			return new CustomerResponseDto
 			{
@@ -64,27 +85,27 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				FirstName = customer.FirstName,
 				LastName = customer.LastName,
 				Email = customer.Email,
-				PromoCodes = new List<PromoCodeShortResponseDto>
+				Preferences = preferences.Select(x => new PreferenceResponseDto
 				{
-
-				}
-				//Preferences 
+					Id = x.Id,
+					Name = x.Name,
+				}).ToList()
 			};
 		}
 
 		public async Task UpdateAsync(Guid id, CreateOrEditCustomerRequestDto model)
 		{
-			var customer = await _customerRepository.GetByIdAsync(id)
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer)}.{nameof(Customer.Preferences)}")
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
-			//var role = (await _roleRepository.GetAllAsync())
-			//	.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
+			var preferences = (await _preferenceRepository.GetAllAsync())
+				.Where(preference => model.Preferences.Select(x => x.ToString().ToLower()).Contains(preference.Name.ToLower()))
+				.ToList();
 
-			//employee.FirstName = model.FirstName;
-			//employee.LastName = model.LastName;
-			//employee.Email = model.Email;
-			//employee.AppliedPromocodesCount = model.AppliedPromocodesCount;
-			//employee.Role = role;
+			customer.FirstName = model.FirstName;
+			customer.LastName = model.LastName;
+			customer.Email = model.Email;
+			customer.Preferences = preferences;
 
 			_customerRepository.Update(customer);
 			await _customerRepository.SaveChangesAsync();
@@ -92,7 +113,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task DeleteAsync(Guid id)
 		{
-			var customer = await _customerRepository.GetByIdAsync(id)
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer)}.{nameof(Customer.PromoCodes)}")
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
 			_customerRepository.Delete(customer);

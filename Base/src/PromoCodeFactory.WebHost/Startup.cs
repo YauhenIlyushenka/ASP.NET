@@ -58,6 +58,8 @@ namespace PromoCodeFactory.WebHost
 			{
 				endpoints.MapControllers();
 			});
+
+			app.MigrateDatabase<DatabaseContext>();
 		}
 	}
 }

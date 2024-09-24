@@ -1,5 +1,7 @@
 ﻿using PromoCodeFactory.Core.Domain;
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,9 +9,9 @@ namespace PromoCodeFactory.Core.Abstractions.Repositories
 {
 	public interface IRepository<T, TId> where T : IEntity<TId>
 	{
-		Task<List<T>> GetAllAsync(bool asNoTracking = false);
+		Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, bool asNoTracking = false);
 
-		Task<T> GetByIdAsync(TId id);
+		Task<T> GetByIdAsync(Expression<Func<T, bool>> filter, string includes = null);
 
 		Task<T> AddAsync(T entity);
 

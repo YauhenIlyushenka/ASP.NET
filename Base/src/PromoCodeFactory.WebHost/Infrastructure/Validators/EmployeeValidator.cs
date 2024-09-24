@@ -16,6 +16,9 @@ namespace PromoCodeFactory.WebHost.Infrastructure.Validators
 		}
 
 		private bool ValidateRoleField(Role enteredRole)
-			=> EnumHelper.ToList<Role>().Where(role => role != Role.None).Any(role => role == enteredRole);
+			=> EnumHelper
+			.ToList<Role>()
+			.Where(role => role != Role.None)
+			.Any(role => role == enteredRole);
 	}
 }

@@ -29,7 +29,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<EmployeeResponseDto> GetByIdAsync(Guid id)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(id)
+			var employee = await _employeeRepository.GetByIdAsync(x => x.Id.Equals(id))
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
 			return new EmployeeResponseDto
@@ -80,7 +80,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task UpdateAsync(Guid id, EmployeeRequestDto model)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(id)
+			var employee = await _employeeRepository.GetByIdAsync(x => x.Id.Equals(id))
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
 			var role = (await _roleRepository.GetAllAsync())
@@ -98,7 +98,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task DeleteAsync(Guid id)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(id)
+			var employee = await _employeeRepository.GetByIdAsync(x => x.Id.Equals(id))
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
 			_employeeRepository.Delete(employee);

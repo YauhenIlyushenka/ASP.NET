@@ -33,14 +33,12 @@ namespace PromoCodeFactory.WebHost.Controllers
 		public async Task<List<EmployeeShortResponse>> GetEmployeesAsync()
 		{
 			var employees = await _employeeService.GetAllAsync();
-			var employeesModels = employees.Select(x => new EmployeeShortResponse
+			return employees.Select(x => new EmployeeShortResponse
 			{
 				Id = x.Id,
 				Email = x.Email,
 				FullName = x.FullName,
 			}).ToList();
-
-			return employeesModels;
 		}
 
 		/// <summary>
@@ -51,7 +49,8 @@ namespace PromoCodeFactory.WebHost.Controllers
 		public async Task<EmployeeResponse> GetEmployeeByIdAsync([FromRoute] Guid id)
 		{
 			var employee = await _employeeService.GetByIdAsync(id);
-			var employeeModel = new EmployeeResponse
+
+			return new EmployeeResponse
 			{
 				Id = employee.Id,
 				Email = employee.Email,
@@ -64,8 +63,6 @@ namespace PromoCodeFactory.WebHost.Controllers
 				FullName = employee.FullName,
 				AppliedPromocodesCount = employee.AppliedPromocodesCount
 			};
-
-			return employeeModel;
 		}
 
 		/// <summary>
@@ -84,7 +81,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 				Role = model.Role
 			});
 
-			var employeeModel = new EmployeeResponse
+			return new EmployeeResponse
 			{
 				Id = employee.Id,
 				Email = employee.Email,
@@ -97,8 +94,6 @@ namespace PromoCodeFactory.WebHost.Controllers
 				FullName = employee.FullName,
 				AppliedPromocodesCount = employee.AppliedPromocodesCount
 			};
-
-			return employeeModel;
 		}
 
 		/// <summary>

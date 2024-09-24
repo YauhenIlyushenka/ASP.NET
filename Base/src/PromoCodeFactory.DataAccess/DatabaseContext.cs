@@ -8,8 +8,8 @@ namespace PromoCodeFactory.DataAccess
 	{
 		public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
 		{
-			Database.EnsureDeleted();
-			Database.EnsureCreated();
+			//Database.EnsureDeleted();
+			//Database.EnsureCreated();
 		}
 
 		public DbSet<Employee> Employees { get; set; }
