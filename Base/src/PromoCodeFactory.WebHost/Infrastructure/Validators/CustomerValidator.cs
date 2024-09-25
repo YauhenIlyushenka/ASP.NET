@@ -18,9 +18,9 @@ namespace PromoCodeFactory.WebHost.Infrastructure.Validators
 
 		private bool ValidateRolesFields(List<Preference> enteredPreferences)
 		{
-			foreach (var preference in EnumHelper.ToList<Preference>().Where(preference => preference != Preference.None))
+			foreach (var preference in enteredPreferences)
 			{
-				if (!enteredPreferences.Contains(preference))
+				if (!EnumHelper.ToList<Preference>().Where(preference => preference != Preference.None).Contains(preference))
 				{
 					return false;
 				}

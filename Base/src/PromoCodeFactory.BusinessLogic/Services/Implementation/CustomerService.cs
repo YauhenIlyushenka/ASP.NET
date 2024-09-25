@@ -32,7 +32,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<CustomerResponseDto> GetByIdAsync(Guid id)
 		{
-			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer)}.{nameof(Customer.PromoCodes)}") 
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer.PromoCodes)}") 
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
 			return new CustomerResponseDto
@@ -69,16 +69,6 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 			await _customerRepository.SaveChangesAsync();
 
-			//customer.Preferences = preferences;
-
-			foreach (var preference in preferences)
-			{
-				preference.Customers.Add(customer);
-				_preferenceRepository.Update(preference);
-			}
-
-			await _preferenceRepository.SaveChangesAsync();
-
 			return new CustomerResponseDto
 			{
 				Id = customer.Id,
@@ -95,7 +85,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task UpdateAsync(Guid id, CreateOrEditCustomerRequestDto model)
 		{
-			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer)}.{nameof(Customer.Preferences)}")
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id))
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
 			var preferences = (await _preferenceRepository.GetAllAsync())
@@ -113,7 +103,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task DeleteAsync(Guid id)
 		{
-			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer)}.{nameof(Customer.PromoCodes)}")
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer.PromoCodes)}")
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
 			_customerRepository.Delete(customer);

@@ -2,6 +2,7 @@
 using PromoCodeFactory.BusinessLogic.Models.Role;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
+using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.Core.Exceptions;
 
 namespace PromoCodeFactory.BusinessLogic.Services.Implementation
@@ -29,7 +30,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<EmployeeResponseDto> GetByIdAsync(Guid id)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(x => x.Id.Equals(id))
+			var employee = await _employeeRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Employee.Role)}")
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
 			return new EmployeeResponseDto

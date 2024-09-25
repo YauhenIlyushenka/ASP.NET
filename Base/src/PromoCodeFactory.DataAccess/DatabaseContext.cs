@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PromoCodeFactory.Core.Domain.Administration;
 using PromoCodeFactory.Core.Domain.PromoCodeManagement;
+using System;
+using System.Collections.Generic;
 
 namespace PromoCodeFactory.DataAccess
 {
 	public class DatabaseContext : DbContext
 	{
 		public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
-		{
-			//Database.EnsureDeleted();
-			//Database.EnsureCreated();
-		}
+		{ }
 
 		public DbSet<Employee> Employees { get; set; }
 		public DbSet<Role> Roles { get; set; }
@@ -24,35 +23,33 @@ namespace PromoCodeFactory.DataAccess
 
 			modelBuilder.Entity<Role>(entity =>
 			{
+				entity
+					.HasMany(role => role.Employees)
+					.WithOne(employee => employee.Role)
+					.HasForeignKey(employee => employee.RoleId);
+
 				entity.HasKey(x => x.Id);
 				entity.Property(x => x.Id).HasColumnName("RoleId");
 				entity.Property(x => x.Name).HasMaxLength(32);
 				entity.Property(x => x.Description).HasMaxLength(64);
-
-				//entity.HasData(FakeDataFactory.Roles);
 			});
 
 			modelBuilder.Entity<Employee>(entity =>
 			{
-				entity.HasOne(employee => employee.Role)
-					.WithOne(role => role.Employee)
-					.HasForeignKey<Role>(role => role.EmployeeId);
+				entity
+					.HasMany(employee => employee.PromoCodes)
+					.WithOne(promocode => promocode.PartnerManager)
+					.HasForeignKey(promocode => promocode.EmployeeId);
 
 				entity.HasKey(x => x.Id);
 				entity.Property(x => x.Id).HasColumnName("EmployeeId");
 				entity.Property(x => x.FirstName).HasMaxLength(32);
 				entity.Property(x => x.LastName).HasMaxLength(64);
 				entity.Property(x => x.Email).HasMaxLength(32);
-
-				//entity.HasData(FakeDataFactory.Employees);
 			});
 
 			modelBuilder.Entity<PromoCode>(entity =>
 			{
-				entity.HasOne(promocode => promocode.PartnerManager)
-					.WithOne(employee => employee.PromoCode)
-					.HasForeignKey<Employee>(employee => employee.PromoCodeId);
-
 				entity.HasKey(x => x.Id);
 				entity.Property(x => x.Id).HasColumnName("PromoCodeId");
 				entity.Property(x => x.Code).HasMaxLength(32);
@@ -62,15 +59,20 @@ namespace PromoCodeFactory.DataAccess
 
 			modelBuilder.Entity<Preference>(entity =>
 			{
-				entity.HasOne(preference => preference.PromoCode)
+				entity
+					.HasMany(preference => preference.Promocodes)
 					.WithOne(promocode => promocode.Preference)
-					.HasForeignKey<Preference>(preference => preference.PromoCodeId);
+					.HasForeignKey(promocode => promocode.PreferenceId);
 
 				entity.HasKey(x => x.Id);
 				entity.Property(x => x.Id).HasColumnName("PreferenceId");
 				entity.Property(x => x.Name).HasMaxLength(32);
+			});
 
-				//entity.HasData(FakeDataFactory.Preferences);
+			modelBuilder.SharedTypeEntity<Dictionary<string, object>>("CustomerPreference", builder =>
+			{
+				builder.Property<Guid>("CustomerId");
+				builder.Property<Guid>("PreferenceId");
 			});
 
 			modelBuilder.Entity<Customer>(entity =>
@@ -80,25 +82,19 @@ namespace PromoCodeFactory.DataAccess
 				entity.Property(x => x.FirstName).HasMaxLength(32);
 				entity.Property(x => x.LastName).HasMaxLength(64);
 				entity.Property(x => x.Email).HasMaxLength(32);
-				//entity.HasData(FakeDataFactory.Customers);
 
-				entity.HasMany(customer => customer.PromoCodes)
+				entity
+					.HasMany(customer => customer.PromoCodes)
 					.WithOne(promocode => promocode.Customer)
 					.HasForeignKey(promocode => promocode.CustomerId);
 
-				entity.HasMany(customer => customer.Preferences)
-					.WithMany(preference => preference.Customers)
-					.UsingEntity(
-					   "CustomerPreference",
-					   l => l.HasOne(typeof(Customer)).WithMany().HasForeignKey("CustomerId"),
-					   r => r.HasOne(typeof(Preference)).WithMany().HasForeignKey("PreferenceId"),
-					   j => j.HasKey("CustomerId", "PreferenceId"));
-					//.HasData(new[]
-					//   {
-					//	   new { CustomerId = FakeDataFactory.Customers.First().Id, PreferenceId = FakeDataFactory.Preferences.First().Id },
-					//	   new { CustomerId = FakeDataFactory.Customers.First().Id, PreferenceId = FakeDataFactory.Preferences.Last().Id },
-					//   });
-
+				entity
+					.HasMany(x => x.Preferences)
+					.WithMany(x => x.Customers)
+					.UsingEntity<Dictionary<string, object>>("CustomerPreference",
+						x => x.HasOne<Preference>().WithMany().HasForeignKey("PreferenceId"),
+						x => x.HasOne<Customer>().WithMany().HasForeignKey("CustomerId"),
+						j => j.HasKey("CustomerId", "PreferenceId"));
 			});
 		}
 	}

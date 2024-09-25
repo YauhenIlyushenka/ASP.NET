@@ -15,19 +15,32 @@ namespace PromoCodeFactory.DataAccess.Abstarctions
 		private readonly DbSet<T> _entitySet;
 		protected readonly DbContext Context;
 
+		private static readonly char[] IncludeSeparator = [','];
+
 		protected BaseRepostory(DbContext context)
 		{
 			Context = context;
 			_entitySet = Context.Set<T>();
 		}
 
-		public virtual async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, bool asNoTracking = false)
+		public virtual async Task<List<T>> GetAllAsync(
+			Expression<Func<T, bool>> filter = null,
+			string includes = null,
+			bool asNoTracking = false)
 		{
 			IQueryable<T> query = _entitySet;
 
 			if (filter != null)
 			{
 				query = query.Where(filter);
+			}
+
+			if (includes != null && includes.Any())
+			{
+				foreach (var includeEntity in includes.Split(IncludeSeparator, StringSplitOptions.RemoveEmptyEntries))
+				{
+					query = query.Include(includeEntity);
+				}
 			}
 
 			if (asNoTracking)
@@ -47,9 +60,9 @@ namespace PromoCodeFactory.DataAccess.Abstarctions
 				query = query.Where(filter);
 			}
 
-			if (includes == null || includes.Length == 0)
+			if (includes != null && includes.Any())
 			{
-				foreach (var includeEntity in includes.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				foreach (var includeEntity in includes.Split(IncludeSeparator, StringSplitOptions.RemoveEmptyEntries))
 				{
 					query = query.Include(includeEntity);
 				}

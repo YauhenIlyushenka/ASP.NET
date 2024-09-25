@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PromoCodeFactory.Core.Domain.PromoCodeManagement;
+using System;
+using System.Collections.Generic;
 
 namespace PromoCodeFactory.Core.Domain.Administration
 {
@@ -7,7 +9,11 @@ namespace PromoCodeFactory.Core.Domain.Administration
 		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
-		public Guid EmployeeId { get; set; }
-		public Employee Employee { get; set; }
+		public ICollection<Employee> Employees { get; set; }
+
+		public Role()
+		{
+			Employees = new List<Employee>();
+		}
 	}
 }

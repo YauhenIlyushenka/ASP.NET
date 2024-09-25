@@ -3,6 +3,7 @@ using PromoCodeFactory.BusinessLogic.Models.Customer;
 using PromoCodeFactory.BusinessLogic.Services;
 using PromoCodeFactory.WebHost.Models.Request.Customer;
 using PromoCodeFactory.WebHost.Models.Response.Customer;
+using PromoCodeFactory.WebHost.Models.Response.Preference;
 using PromoCodeFactory.WebHost.Models.Response.PromoCode;
 using System;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 				FirstName = customer.FirstName,
 				LastName = customer.LastName,
 				Email = customer.Email,
-				PromoCodes = customer.PromoCodes?.Select(x => new PromoCodeShortResponse
+				PromoCodes = customer.PromoCodes.Select(x => new PromoCodeShortResponse
 				{
 					Id = x.Id,
 					Code = x.Code,
@@ -79,19 +80,10 @@ namespace PromoCodeFactory.WebHost.Controllers
 				FirstName = customer.FirstName,
 				LastName = customer.LastName,
 				Email = customer.Email,
-				Preferences = customer.Preferences?.Select(x => new Models.Response.Preference.PreferenceResponse
+				Preferences = customer.Preferences.Select(x => new PreferenceResponse
 				{
 					Id = x.Id,
 					Name = x.Name,
-				}).ToList(),
-				PromoCodes = customer.PromoCodes?.Select(x => new PromoCodeShortResponse
-				{
-					Id = x.Id,
-					Code = x.Code,
-					BeginDate = x.BeginDate,
-					EndDate = x.EndDate,
-					PartnerName = x.PartnerName,
-					ServiceInfo = x.ServiceInfo,
 				}).ToList()
 			};
 		}

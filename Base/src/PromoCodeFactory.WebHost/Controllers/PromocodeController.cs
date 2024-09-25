@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PromoCodeFactory.BusinessLogic.Models.PromoCode;
+using PromoCodeFactory.BusinessLogic.Services;
 using PromoCodeFactory.WebHost.Models.Request.PromoCode;
 using PromoCodeFactory.WebHost.Models.Response.PromoCode;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using PromoCodeFactory.BusinessLogic.Services;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace PromoCodeFactory.WebHost.Controllers
 {
@@ -51,7 +51,13 @@ namespace PromoCodeFactory.WebHost.Controllers
 		public async Task GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequest request)
 		{
 			//TODO: Создать промокод и выдать его клиентам с указанным предпочтением
-			throw new NotImplementedException();
+			await _promocodeService.GivePromoCodesToCustomersWithPreferenceAsync(new GivePromoCodeRequestDto
+			{
+				ServiceInfo = request.ServiceInfo,
+				PartnerName = request.PartnerName,
+				PromoCode = request.PromoCode,
+				Preference = request.Preference,
+			});
 		}
 	}
 }

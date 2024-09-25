@@ -8,10 +8,14 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 	public class PromocodeService : IPromocodeService
 	{
 		private readonly IRepository<PromoCode, Guid> _promocodeRepository;
+		private readonly IRepository<Preference, Guid> _preferenceRepository;
 
-		public PromocodeService(IRepository<PromoCode, Guid> promocodeRepository)
+		public PromocodeService(
+			IRepository<PromoCode, Guid> promocodeRepository,
+			IRepository<Preference, Guid> preferenceRepository)
 		{
 			_promocodeRepository = promocodeRepository;
+			_preferenceRepository = preferenceRepository;
 		}
 
 		public async Task<List<PromoCodeShortResponseDto>> GetAllAsync()
@@ -22,13 +26,21 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				BeginDate = x.BeginDate.ToDateString(),
 				EndDate = x.EndDate.ToDateString(),
 				PartnerName = x.PartnerName,
-				ServiceInfo = x.ServiceInfo
+				ServiceInfo = x.ServiceInfo,
 			}).ToList();
 
 
 		public async Task GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequestDto request)
 		{
-			throw new NotImplementedException();
+			var preference = await _preferenceRepository
+				.GetAllAsync(x => x.Name.Equals(request.Preference.ToString()), nameof(Preference.Customers));
+
+			await _promocodeRepository.AddAsync(new PromoCode
+			{
+				ServiceInfo = request.ServiceInfo,
+			});
+
+
 		}
 	}
 }

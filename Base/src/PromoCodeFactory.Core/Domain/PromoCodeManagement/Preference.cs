@@ -8,14 +8,13 @@ namespace PromoCodeFactory.Core.Domain.PromoCodeManagement
 		public Guid Id { get; set; }
 		public string Name { get; set; }
 
-		public Guid PromoCodeId { get; set; }
-		public PromoCode PromoCode { get; set; }
-
+		public ICollection<PromoCode> Promocodes { get; set; }
 		public ICollection<Customer> Customers { get; set; }
 
 		public Preference()
 		{
 			Customers = new List<Customer>();
+			Promocodes = new List<PromoCode>();
 		}
 	}
 }
