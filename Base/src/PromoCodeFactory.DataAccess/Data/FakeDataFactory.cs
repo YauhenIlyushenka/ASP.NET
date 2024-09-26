@@ -39,13 +39,13 @@ namespace PromoCodeFactory.DataAccess.Data
 			{
 				Id = Guid.Parse("53729686-a368-4eeb-8bfa-cc69b6050d02"),
 				Name = EnumRole.Admin.ToString(),
-				Description = EnumHelper.GetDescription(EnumRole.Admin),
+				DescriptionRole = EnumHelper.GetDescription(EnumRole.Admin),
 			},
 			new Role()
 			{
 				Id = Guid.Parse("b0ae7aac-5493-45cd-ad16-87426a5e7665"),
 				Name = EnumRole.PartnerManager.ToString(),
-				Description = EnumHelper.GetDescription(EnumRole.PartnerManager),
+				DescriptionRole = EnumHelper.GetDescription(EnumRole.PartnerManager),
 			}
 		};
 

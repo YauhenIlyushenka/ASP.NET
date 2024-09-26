@@ -40,7 +40,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				{
 					Id = employee.Role.Id,
 					Name = employee.Role.Name,
-					Description = employee.Role.Description,
+					Description = employee.Role.DescriptionRole,
 				},
 				FullName = employee.FullName,
 				AppliedPromocodesCount = employee.AppliedPromocodesCount
@@ -72,7 +72,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				{
 					Id = employee.Role.Id,
 					Name = employee.Role.Name,
-					Description = employee.Role.Description,
+					Description = employee.Role.DescriptionRole,
 				},
 				FullName = employee.FullName,
 				AppliedPromocodesCount = employee.AppliedPromocodesCount

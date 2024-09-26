@@ -43,9 +43,9 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			var scope = application.ApplicationServices.CreateScope();
 			var dbContext = scope.ServiceProvider.GetService<T>();
 
-			dbContext.Database.EnsureDeleted();
+			//dbContext.Database.EnsureDeleted();
 			dbContext.Database.Migrate();
-			Seed(scope.ServiceProvider);
+			//Seed(scope.ServiceProvider);
 		}
 
 		private static void Seed(IServiceProvider serviceProvider)

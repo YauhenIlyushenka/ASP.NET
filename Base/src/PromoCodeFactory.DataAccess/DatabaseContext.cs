@@ -31,7 +31,7 @@ namespace PromoCodeFactory.DataAccess
 				entity.HasKey(x => x.Id);
 				entity.Property(x => x.Id).HasColumnName("RoleId");
 				entity.Property(x => x.Name).HasMaxLength(32);
-				entity.Property(x => x.Description).HasMaxLength(64);
+				entity.Property(x => x.DescriptionRole).HasMaxLength(64);
 			});
 
 			modelBuilder.Entity<Employee>(entity =>

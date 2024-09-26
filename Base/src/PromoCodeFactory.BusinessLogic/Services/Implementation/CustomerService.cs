@@ -32,7 +32,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<CustomerResponseDto> GetByIdAsync(Guid id)
 		{
-			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer.PromoCodes)}", asNoTracking: true) 
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer.PromoCodes)}", asNoTracking: true)
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
 			return new CustomerResponseDto
@@ -84,7 +84,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task UpdateAsync(Guid id, CreateOrEditCustomerRequestDto model)
 		{
-			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id))
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), nameof(Customer.Preferences))
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
 			var enteredPreferences = model.Preferences.Select(x => x.ToString().ToLower());
