@@ -2,7 +2,6 @@
 using PromoCodeFactory.BusinessLogic.Models.Role;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
-using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.Core.Exceptions;
 
 namespace PromoCodeFactory.BusinessLogic.Services.Implementation
@@ -21,7 +20,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		}
 
 		public async Task<List<EmployeeShortResponseDto>> GetAllAsync()
-			=> (await _employeeRepository.GetAllAsync()).Select(x => new EmployeeShortResponseDto
+			=> (await _employeeRepository.GetAllAsync(asNoTracking: true)).Select(x => new EmployeeShortResponseDto
 			{
 				Id = x.Id,
 				Email = x.Email,
@@ -30,7 +29,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<EmployeeResponseDto> GetByIdAsync(Guid id)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Employee.Role)}")
+			var employee = await _employeeRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Employee.Role)}", asNoTracking: true)
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
 			return new EmployeeResponseDto
@@ -50,8 +49,9 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<EmployeeResponseDto> CreateAsync(EmployeeRequestDto model)
 		{
-			var role = (await _roleRepository.GetAllAsync())
-				.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
+			var role = (await _roleRepository
+				.GetAllAsync(role => role.Name.Equals(model.Role.ToString())))
+				.Single();
 
 			var employee = await _employeeRepository.AddAsync(new Employee
 			{
@@ -84,8 +84,9 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 			var employee = await _employeeRepository.GetByIdAsync(x => x.Id.Equals(id))
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
 
-			var role = (await _roleRepository.GetAllAsync())
-				.Single(role => role.Name.Equals(model.Role.ToString(), StringComparison.OrdinalIgnoreCase));
+			var role = (await _roleRepository
+				.GetAllAsync(role => role.Name.Equals(model.Role.ToString())))
+				.Single();
 
 			employee.FirstName = model.FirstName;
 			employee.LastName = model.LastName;

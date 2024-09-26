@@ -51,7 +51,10 @@ namespace PromoCodeFactory.DataAccess.Abstarctions
 			return await query.ToListAsync();
 		}
 
-		public virtual async Task<T> GetByIdAsync(Expression<Func<T, bool>> filter, string includes = null)
+		public virtual async Task<T> GetByIdAsync(
+			Expression<Func<T, bool>> filter,
+			string includes = null,
+			bool asNoTracking = false)
 		{
 			IQueryable<T> query = _entitySet;
 
@@ -67,7 +70,12 @@ namespace PromoCodeFactory.DataAccess.Abstarctions
 					query = query.Include(includeEntity);
 				}
 			}
-			
+
+			if (asNoTracking)
+			{
+				query = query.AsNoTracking();
+			}
+
 			return await query.SingleOrDefaultAsync();
 		}
 
@@ -75,9 +83,7 @@ namespace PromoCodeFactory.DataAccess.Abstarctions
 			=> (await _entitySet.AddAsync(entity)).Entity;
 
 		public virtual void Update(T entity)
-		{
-			Context.Entry(entity).State = EntityState.Modified;
-		}
+			=> Context.Entry(entity).State = EntityState.Modified;
 
 		public bool Delete(T entity)
 		{

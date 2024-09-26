@@ -103,7 +103,6 @@ namespace PromoCodeFactory.WebHost.Controllers
 		[HttpDelete("{id:guid}")]
 		public async Task DeleteCustomer([FromRoute] Guid id)
 		{
-			//TODO: Удаление клиента вместе с выданными ему промокодами
 			await _customerService.DeleteAsync(id);
 		}
 	}

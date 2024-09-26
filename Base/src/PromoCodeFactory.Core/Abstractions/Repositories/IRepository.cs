@@ -11,7 +11,7 @@ namespace PromoCodeFactory.Core.Abstractions.Repositories
 	{
 		Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, string includes = null, bool asNoTracking = false);
 
-		Task<T> GetByIdAsync(Expression<Func<T, bool>> filter, string includes = null);
+		Task<T> GetByIdAsync(Expression<Func<T, bool>> filter, string includes = null, bool asNoTracking = false);
 
 		Task<T> AddAsync(T entity);
 

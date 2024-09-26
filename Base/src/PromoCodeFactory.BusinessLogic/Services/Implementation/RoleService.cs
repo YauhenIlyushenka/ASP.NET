@@ -14,7 +14,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		}
 
 		public async Task<List<RoleItemResponseDto>> GetAllAsync()
-			=> (await _roleRepository.GetAllAsync()).Select(x => new RoleItemResponseDto
+			=> (await _roleRepository.GetAllAsync(asNoTracking: true)).Select(x => new RoleItemResponseDto
 			{
 				Id = x.Id,
 				Name = x.Name,

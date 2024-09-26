@@ -50,12 +50,14 @@ namespace PromoCodeFactory.WebHost.Controllers
 		[HttpPost]
 		public async Task GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequest request)
 		{
-			//TODO: Создать промокод и выдать его клиентам с указанным предпочтением
 			await _promocodeService.GivePromoCodesToCustomersWithPreferenceAsync(new GivePromoCodeRequestDto
 			{
 				ServiceInfo = request.ServiceInfo,
 				PartnerName = request.PartnerName,
 				PromoCode = request.PromoCode,
+				BeginDate = request.BeginDate,
+				EndDate= request.EndDate,
+				EmployeeId = request.EmployeeId,
 				Preference = request.Preference,
 			});
 		}

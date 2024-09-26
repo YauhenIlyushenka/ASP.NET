@@ -7,7 +7,6 @@ using PromoCodeFactory.DataAccess.Data;
 using PromoCodeFactory.WebHost.Infrastructure.Validators;
 using PromoCodeFactory.WebHost.Models.Request;
 using System;
-using System.Linq;
 
 namespace PromoCodeFactory.WebHost.Infrastructure
 {
@@ -56,7 +55,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 
 			dbContext.AddRange(FakeDataFactory.Roles);
 			dbContext.AddRange(FakeDataFactory.Employees);
-			dbContext.AddRange(FakeDataFactory.Customers.First());
+			dbContext.AddRange(FakeDataFactory.Customers);
 
 			dbContext.SaveChanges();
 		}

@@ -14,7 +14,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		}
 
 		public async Task<List<PreferenceResponseDto>> GetAllAsync()
-			=> (await _preferenceRepository.GetAllAsync()).Select(x => new PreferenceResponseDto
+			=> (await _preferenceRepository.GetAllAsync(asNoTracking: true)).Select(x => new PreferenceResponseDto
 			{
 				Id = x.Id,
 				Name = x.Name,

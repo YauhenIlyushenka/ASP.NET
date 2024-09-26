@@ -22,7 +22,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 		}
 
 		public async Task<List<CustomerShortResponseDto>> GetAllAsync()
-			=> (await _customerRepository.GetAllAsync()).Select(x => new CustomerShortResponseDto
+			=> (await _customerRepository.GetAllAsync(asNoTracking: true)).Select(x => new CustomerShortResponseDto
 			{
 				Id = x.Id,
 				FirstName = x.FirstName,
@@ -32,7 +32,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<CustomerResponseDto> GetByIdAsync(Guid id)
 		{
-			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer.PromoCodes)}") 
+			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id), $"{nameof(Customer.PromoCodes)}", asNoTracking: true) 
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
 			return new CustomerResponseDto
@@ -55,9 +55,8 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 
 		public async Task<CustomerResponseDto> CreateAsync(CreateOrEditCustomerRequestDto model)
 		{
-			var preferences = (await _preferenceRepository.GetAllAsync())
-				.Where(preference => model.Preferences.Select(x => x.ToString().ToLower()).Contains(preference.Name.ToLower()))
-				.ToList();
+			var enteredPreferences = model.Preferences.Select(x => x.ToString().ToLower());
+			var preferences = await _preferenceRepository.GetAllAsync(x => enteredPreferences.Contains(x.Name.ToLower()));
 
 			var customer = await _customerRepository.AddAsync(new Customer
 			{
@@ -88,9 +87,8 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 			var customer = await _customerRepository.GetByIdAsync(x => x.Id.Equals(id))
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Customer)));
 
-			var preferences = (await _preferenceRepository.GetAllAsync())
-				.Where(preference => model.Preferences.Select(x => x.ToString().ToLower()).Contains(preference.Name.ToLower()))
-				.ToList();
+			var enteredPreferences = model.Preferences.Select(x => x.ToString().ToLower());
+			var preferences = await _preferenceRepository.GetAllAsync(x => enteredPreferences.Contains(x.Name.ToLower()));
 
 			customer.FirstName = model.FirstName;
 			customer.LastName = model.LastName;
