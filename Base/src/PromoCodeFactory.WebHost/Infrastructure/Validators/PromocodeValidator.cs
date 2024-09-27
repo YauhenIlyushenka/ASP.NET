@@ -13,9 +13,9 @@ namespace PromoCodeFactory.WebHost.Infrastructure.Validators
 	{
 		public PromocodeValidator()
 		{
-			RuleFor(x => x.PromoCode).NotEmpty();
-			RuleFor(x => x.PartnerName).NotEmpty();
-			RuleFor(x => x.ServiceInfo).NotEmpty();
+			RuleFor(x => x.PromoCode).NotEmpty().MaximumLength(16);
+			RuleFor(x => x.PartnerName).NotEmpty().MaximumLength(16);
+			RuleFor(x => x.ServiceInfo).NotEmpty().MaximumLength(32);
 			RuleFor(x => x.EmployeeId).NotEmpty();
 			RuleFor(x => new { x.BeginDate, x.EndDate })
 				.Must(x => ValidateDateFields(x.BeginDate, x.EndDate))
