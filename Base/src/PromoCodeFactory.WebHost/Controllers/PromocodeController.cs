@@ -48,7 +48,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPost]
-		public async Task GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequest request)
+		public async Task GivePromoCodesToCustomersWithPreferenceAsync([FromBody] GivePromoCodeRequest request)
 		{
 			await _promocodeService.GivePromoCodesToCustomersWithPreferenceAsync(new GivePromoCodeRequestDto
 			{
@@ -56,7 +56,7 @@ namespace PromoCodeFactory.WebHost.Controllers
 				PartnerName = request.PartnerName,
 				PromoCode = request.PromoCode,
 				BeginDate = request.BeginDate,
-				EndDate= request.EndDate,
+				EndDate = request.EndDate,
 				EmployeeId = request.EmployeeId,
 				Preference = request.Preference,
 			});

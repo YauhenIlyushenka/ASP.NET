@@ -18,6 +18,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			services.AddValidatorsFromAssemblyContaining<EmployeeValidator>();
 			services.AddValidatorsFromAssemblyContaining<CustomerValidator>();
 			services.AddValidatorsFromAssemblyContaining<PromocodeValidator>();
+			services.AddValidatorsFromAssemblyContaining<PartnerPromocodeLimitValidator>();
 		}
 
 		public static void AddSwaggerServices(this IServiceCollection services)

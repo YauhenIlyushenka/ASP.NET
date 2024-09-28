@@ -38,7 +38,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure.ExceptionHandling
 			response.ContentType = ResponseContentType;
 			response.StatusCode = exception switch
 			{
-				ArgumentException => (int)HttpStatusCode.BadRequest,
+				ArgumentException or BadRequestException => (int)HttpStatusCode.BadRequest,
 				NotFoundException => (int)HttpStatusCode.NotFound,
 				_ => (int)HttpStatusCode.InternalServerError,
 			};
