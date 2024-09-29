@@ -8,6 +8,8 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 {
 	public class PartnerService : BaseService, IPartnerService
 	{
+		private const int DefaultCountIssuedPromoCodes = 0;
+
 		private readonly IRepository<Partner, Guid> _partnerRepository;
 
 		public PartnerService(IRepository<Partner, Guid> partnerRepository)
@@ -22,7 +24,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 					Id = partner.Id,
 					Name = partner.Name,
 					NumberIssuedPromoCodes = partner.NumberIssuedPromoCodes,
-					IsActive = true,
+					IsActive = partner.IsActive,
 					PartnerLimits = partner.PartnerLimits.Select(limit => new PartnerPromoCodeLimitDto()
 					{
 						Id = limit.Id,
@@ -52,22 +54,60 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				CancelDate = limit.CancelDate?.ToDateString(),
 			};
 		}
-		//public async Task<PartnerPromoCodeLimit> SetPartnerPromoCodeLimitAsync(Guid id, PartnerPromoCodeLimitRequestDto request)
-		//{
-		//	var partner = await _partnerRepository.GetByIdAsync(x => x.Id.Equals(id), includes: nameof(Partner.PartnerLimits))
-		//		?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Partner)));
 
-		//	if (!partner.IsActive) 
-		//		throw new BadRequestException($" The {nameof(Partner)} with id: {partner.Id} is not active.");
+		public async Task<PartnerPromoCodeLimitDto> SetPartnerPromoCodeLimitAsync(Guid id, PartnerPromoCodeLimitRequestDto request)
+		{
+			var partner = await _partnerRepository.GetByIdAsync(x => x.Id.Equals(id), includes: nameof(Partner.PartnerLimits))
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Partner)));
 
+			if (!partner.IsActive)
+				throw new BadRequestException($" The {nameof(Partner)} with id: {partner.Id} is not active.");
 
+			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.Now);
 
-		//}
+			if (activeLimit != null)
+			{
+				partner.NumberIssuedPromoCodes = DefaultCountIssuedPromoCodes;
+				activeLimit.CancelDate = DateTime.Now;
+			}
 
-		//public Task CancelPartnerPromoCodeLimitAsync(Guid id)
-		//{
-		//	throw new NotImplementedException();
-		//}
+			var newLimit = new PartnerPromoCodeLimit
+			{
+				Limit = request.Limit,
+				CreateDate = DateTime.Now,
+				EndDate = request.EndDate.ToDateTime(),
+			};
 
+			partner.PartnerLimits.Add(newLimit);
+			_partnerRepository.Update(partner);
+
+			await _partnerRepository.SaveChangesAsync();
+
+			return new PartnerPromoCodeLimitDto
+			{
+				Id = newLimit.Id,
+				PartnerId = partner.Id,
+				Limit = newLimit.Limit,
+				CreateDate = newLimit.CreateDate.ToDateString(),
+				EndDate = newLimit.EndDate.ToDateString(),
+			};
+		}
+
+		public async Task CancelPartnerPromoCodeLimitAsync(Guid id)
+		{
+			var partner = await _partnerRepository.GetByIdAsync(x => x.Id.Equals(id), includes: nameof(Partner.PartnerLimits))
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Partner)));
+
+			if (!partner.IsActive)
+				throw new BadRequestException($"The {nameof(Partner)} with id: {partner.Id} is not active.");
+
+			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.Now)
+				?? throw new BadRequestException($"No active {nameof(Partner.PartnerLimits)} found for {nameof(Partner)}");
+
+			activeLimit.CancelDate = DateTime.Now;
+			_partnerRepository.Update(partner);
+
+			await _partnerRepository.SaveChangesAsync();
+		}
 	}
 }

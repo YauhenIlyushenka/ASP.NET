@@ -1,5 +1,4 @@
 ﻿using PromoCodeFactory.BusinessLogic.Models.Partner;
-using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 
 namespace PromoCodeFactory.BusinessLogic.Services
 {
@@ -7,7 +6,7 @@ namespace PromoCodeFactory.BusinessLogic.Services
 	{
 		Task<List<PartnerDto>> GetAllAsync();
 		Task<PartnerPromoCodeLimitDto> GetPartnerLimitAsync(Guid id, Guid limitId);
-		Task<PartnerPromoCodeLimit> SetPartnerPromoCodeLimitAsync(Guid id, PartnerPromoCodeLimitRequestDto request);
+		Task<PartnerPromoCodeLimitDto> SetPartnerPromoCodeLimitAsync(Guid id, PartnerPromoCodeLimitRequestDto request);
 		Task CancelPartnerPromoCodeLimitAsync(Guid id);
 	}
 }

@@ -24,6 +24,10 @@ namespace PromoCodeFactory.WebHost.Controllers
 			_partnerService = partnerService;
 		}
 
+		/// <summary>
+		/// Get all partners with partnerLimits
+		/// </summary>
+		/// <returns></returns>
 		[HttpGet]
 		public async Task<List<PartnerResponse>> GetPartnersAsync()
 		{
@@ -47,6 +51,11 @@ namespace PromoCodeFactory.WebHost.Controllers
 			}).ToList();
 		}
 
+
+		/// <summary>
+		/// Get all partnerLimits of definite partner
+		/// </summary>
+		/// <returns></returns>
 		[HttpGet("{id:guid}/limits/{limitId:guid}")]
 		public async Task<PartnerPromoCodeLimitResponse> GetPartnerLimitAsync([FromRoute] Guid id, [FromRoute] Guid limitId)
 		{
@@ -63,78 +72,38 @@ namespace PromoCodeFactory.WebHost.Controllers
 			};
 		}
 
-		//[HttpPost("{id:guid}/limits")]
-		//public async Task<IActionResult> SetPartnerPromoCodeLimitAsync([FromRoute] Guid id, [FromBody] SetPartnerPromoCodeLimitRequest request)
-		//{
-		//	var result = await _partnerService.SetPartnerPromoCodeLimitAsync(id, new PartnerPromoCodeLimitRequestDto
-		//	{
-		//		EndDate = request.EndDate,
-		//		Limit = request.Limit,
-		//	});
-		//	var partner = await _partnersRepository.GetByIdAsync(id);
+		/// <summary>
+		/// Set PromocodeLimit for definite partner
+		/// </summary>
+		/// <returns></returns>
+		[HttpPost("{id:guid}/limits")]
+		public async Task<PartnerPromoCodeLimitResponse> SetPartnerPromoCodeLimitAsync([FromRoute] Guid id, [FromBody] SetPartnerPromoCodeLimitRequest request)
+		{
+			var partnerLimit = await _partnerService.SetPartnerPromoCodeLimitAsync(id, new PartnerPromoCodeLimitRequestDto
+			{
+				EndDate = request.EndDate,
+				Limit = request.Limit,
+			});
 
-		//	if (partner == null)
-		//		return NotFound();
+			return new PartnerPromoCodeLimitResponse
+			{
+				Id = partnerLimit.Id,
+				PartnerId = partnerLimit.PartnerId,
+				Limit = partnerLimit.Limit,
+				CreateDate = partnerLimit.CreateDate,
+				EndDate = partnerLimit.EndDate,
+				CancelDate = partnerLimit.CancelDate,
+			};
+		}
 
-		//	//Если партнер заблокирован, то нужно выдать исключение
-		//	if (!partner.IsActive)
-		//		return BadRequest("Данный партнер не активен");
-
-		//	//Установка лимита партнеру
-		//	var activeLimit = partner.PartnerLimits.FirstOrDefault(x =>
-		//		!x.CancelDate.HasValue);
-
-		//	if (activeLimit != null)
-		//	{
-		//		//Если партнеру выставляется лимит, то мы 
-		//		//должны обнулить количество промокодов, которые партнер выдал, если лимит закончился, 
-		//		//то количество не обнуляется
-		//		partner.NumberIssuedPromoCodes = 0;
-
-		//		//При установке лимита нужно отключить предыдущий лимит
-		//		activeLimit.CancelDate = DateTime.Now;
-		//	}
-
-		//	var newLimit = new PartnerPromoCodeLimit()
-		//	{
-		//		Limit = request.Limit,
-		//		Partner = partner,
-		//		PartnerId = partner.Id,
-		//		CreateDate = DateTime.Now,
-		//		EndDate = request.EndDate
-		//	};
-
-		//	partner.PartnerLimits.Add(newLimit);
-
-		//	await _partnersRepository.UpdateAsync(partner);
-
-		//	return CreatedAtAction(nameof(GetPartnerLimitAsync), new { id = partner.Id, limitId = newLimit.Id }, null);
-		//}
-
-		//[HttpPost("{id:guid}/canceledLimits")]
-		//public async Task<IActionResult> CancelPartnerPromoCodeLimitAsync([FromRoute] Guid id)
-		//{
-		//	var partner = await _partnersRepository.GetByIdAsync(id);
-
-		//	if (partner == null)
-		//		return NotFound();
-
-		//	//Если партнер заблокирован, то нужно выдать исключение
-		//	if (!partner.IsActive)
-		//		return BadRequest("Данный партнер не активен");
-
-		//	//Отключение лимита
-		//	var activeLimit = partner.PartnerLimits.FirstOrDefault(x =>
-		//		!x.CancelDate.HasValue);
-
-		//	if (activeLimit != null)
-		//	{
-		//		activeLimit.CancelDate = DateTime.Now;
-		//	}
-
-		//	await _partnersRepository.UpdateAsync(partner);
-
-		//	return NoContent();
-		//}
+		/// <summary>
+		/// Cancel PromocodeLimit for definite partner
+		/// </summary>
+		/// <returns></returns>
+		[HttpPut("{id:guid}/canceledLimits")]
+		public async Task CancelPartnerPromoCodeLimitAsync([FromRoute] Guid id)
+		{
+			await _partnerService.CancelPartnerPromoCodeLimitAsync(id);
+		}
 	}
 }
