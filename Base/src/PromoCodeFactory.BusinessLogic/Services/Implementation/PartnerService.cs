@@ -9,7 +9,6 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 	public class PartnerService : BaseService, IPartnerService
 	{
 		private const int DefaultCountIssuedPromoCodes = 0;
-
 		private readonly IRepository<Partner, Guid> _partnerRepository;
 
 		public PartnerService(IRepository<Partner, Guid> partnerRepository)
@@ -61,7 +60,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Partner)));
 
 			if (!partner.IsActive)
-				throw new BadRequestException($" The {nameof(Partner)} with id: {partner.Id} is not active.");
+				throw new BadRequestException($"The {nameof(Partner)} with id: {partner.Id} is not active.");
 
 			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.Now);
 
@@ -87,6 +86,10 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 			{
 				Id = newLimit.Id,
 				PartnerId = partner.Id,
+				Partner = new PartnerDto
+				{
+					  
+				}, 
 				Limit = newLimit.Limit,
 				CreateDate = newLimit.CreateDate.ToDateString(),
 				EndDate = newLimit.EndDate.ToDateString(),
@@ -102,7 +105,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				throw new BadRequestException($"The {nameof(Partner)} with id: {partner.Id} is not active.");
 
 			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.Now)
-				?? throw new BadRequestException($"No active {nameof(Partner.PartnerLimits)} found for {nameof(Partner)}");
+				?? throw new BadRequestException($"No active {nameof(Partner.PartnerLimits)} found for {nameof(Partner)} with id: {partner.Id}.");
 
 			activeLimit.CancelDate = DateTime.Now;
 			_partnerRepository.Update(partner);

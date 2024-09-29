@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PromoCodeFactory.Core\PromoCodeFactory.Core.csproj" />
+    <ProjectReference Include="..\PromoCodeFactory.BusinessLogic\PromoCodeFactory.BusinessLogic.csproj" />
     <ProjectReference Include="..\PromoCodeFactory.WebHost\PromoCodeFactory.WebHost.csproj" />
   </ItemGroup>
 
