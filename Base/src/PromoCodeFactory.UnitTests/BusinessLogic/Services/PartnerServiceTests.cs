@@ -9,7 +9,7 @@ using PromoCodeFactory.Core.Exceptions;
 using PromoCodeFactory.Core.Helpers;
 using System.Linq.Expressions;
 
-namespace PromoCodeFactory.UnitTests.BusinessLogic
+namespace PromoCodeFactory.UnitTests.BusinessLogic.Services
 {
 	public class PartnerServiceTests
 	{
