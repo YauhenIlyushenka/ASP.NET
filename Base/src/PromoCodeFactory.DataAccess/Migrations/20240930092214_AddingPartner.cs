@@ -6,16 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PromoCodeFactory.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddPartner : Migration
+    public partial class AddingPartner : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Description",
-                table: "Roles",
-                newName: "DescriptionRole");
-
             migrationBuilder.CreateTable(
                 name: "Partners",
                 columns: table => new
@@ -66,11 +61,6 @@ namespace PromoCodeFactory.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Partners");
-
-            migrationBuilder.RenameColumn(
-                name: "DescriptionRole",
-                table: "Roles",
-                newName: "Description");
         }
     }
 }

@@ -71,7 +71,7 @@ namespace PromoCodeFactory.DataAccess.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("RoleId");
 
-                    b.Property<string>("DescriptionRole")
+                    b.Property<string>("Description")
                         .HasMaxLength(64)
                         .HasColumnType("TEXT");
 

@@ -11,8 +11,8 @@ using PromoCodeFactory.DataAccess;
 namespace PromoCodeFactory.DataAccess.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240929130708_AddPartner")]
-    partial class AddPartner
+    [Migration("20240930092214_AddingPartner")]
+    partial class AddingPartner
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace PromoCodeFactory.DataAccess.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("RoleId");
 
-                    b.Property<string>("DescriptionRole")
+                    b.Property<string>("Description")
                         .HasMaxLength(64)
                         .HasColumnType("TEXT");
 
