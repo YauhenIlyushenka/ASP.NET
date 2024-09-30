@@ -88,8 +88,19 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 				PartnerId = partner.Id,
 				Partner = new PartnerDto
 				{
-					  
-				}, 
+					Name = partner.Name,
+					IsActive = partner.IsActive,
+					NumberIssuedPromoCodes = partner.NumberIssuedPromoCodes,
+					PartnerLimits = partner.PartnerLimits.Select(limit => new PartnerPromoCodeLimitDto()
+					{
+						Id = limit.Id,
+						PartnerId = limit.PartnerId,
+						Limit = limit.Limit,
+						CreateDate = limit.CreateDate.ToDateString(),
+						EndDate = limit.EndDate.ToDateString(),
+						CancelDate = limit.CancelDate?.ToDateString(),
+					}).ToList()
+				},
 				Limit = newLimit.Limit,
 				CreateDate = newLimit.CreateDate.ToDateString(),
 				EndDate = newLimit.EndDate.ToDateString(),
