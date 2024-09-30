@@ -75,6 +75,88 @@ namespace PromoCodeFactory.UnitTests.BusinessLogic
 		}
 
 		[Fact]
+		public async Task SetPartnerPromoCodeLimitAsync_WhenSetNewLimitWithInactivePreviousLimit_NumberIssuedPromoCodesShouldNotBeReset()
+		{
+			// Arrange
+			var autoFixture = new Fixture();
+			var partnerId = Guid.Parse("def47943-7aaf-44a1-ae21-05aa4948b165");
+			var numberIssuedPromoCodes = 5;
+			var partner = autoFixture
+				.Build<Partner>()
+				.With(x => x.Id, partnerId)
+				.With(x => x.NumberIssuedPromoCodes, numberIssuedPromoCodes)
+				.With(
+					x => x.PartnerLimits,
+					new List<PartnerPromoCodeLimit>
+					{
+						new PartnerPromoCodeLimit
+						{
+							CancelDate = null,
+							EndDate = DateTime.Now.AddYears(-1)
+						}
+					})
+				.Create();
+
+			var requestDto = autoFixture
+				.Build<PartnerPromoCodeLimitRequestDto>()
+				.With(x => x.EndDate, DateTime.Now.AddYears(1).ToDateString())
+				.Create();
+
+			var expectedNumberIssuedPromoCodes = 5;
+
+			_partnerRepositoryMock
+				.Setup(x => x.GetByIdAsync(It.IsAny<Expression<Func<Partner, bool>>>(), nameof(Partner.PartnerLimits), false))
+				.ReturnsAsync(partner);
+
+			// Act
+			var actionResult = await _partnerService.SetPartnerPromoCodeLimitAsync(partnerId, requestDto);
+
+			// Assert
+			Assert.Equal(expectedNumberIssuedPromoCodes, actionResult.Partner.NumberIssuedPromoCodes);
+		}
+
+		[Fact]
+		public async Task SetPartnerPromoCodeLimitAsync_WhenSetNewLimitWithActivePreviousLimit_NumberIssuedPromoCodesShouldBeReset()
+		{
+			// Arrange
+			var autoFixture = new Fixture();
+			var partnerId = Guid.Parse("def47943-7aaf-44a1-ae21-05aa4948b165");
+			var numberIssuedPromoCodes = 5;
+			var partner = autoFixture
+				.Build<Partner>()
+				.With(x => x.Id, partnerId)
+				.With(x => x.NumberIssuedPromoCodes, numberIssuedPromoCodes)
+				.With(
+					x => x.PartnerLimits,
+					new List<PartnerPromoCodeLimit>
+					{
+						new PartnerPromoCodeLimit
+						{
+							CancelDate = null,
+							EndDate = DateTime.Now.AddYears(5)
+						}
+					})
+				.Create();
+
+			var requestDto = autoFixture
+				.Build<PartnerPromoCodeLimitRequestDto>()
+				.With(x => x.EndDate, DateTime.Now.AddYears(1).ToDateString())
+				.Create();
+
+			var expectedNumberIssuedPromoCodes = 0;
+
+			_partnerRepositoryMock
+				.Setup(x => x.GetByIdAsync(It.IsAny<Expression<Func<Partner, bool>>>(), nameof(Partner.PartnerLimits), false))
+				.ReturnsAsync(partner);
+
+			// Act
+			var actionResult = await _partnerService.SetPartnerPromoCodeLimitAsync(partnerId, requestDto);
+
+			// Assert
+			Assert.Equal(expectedNumberIssuedPromoCodes, actionResult.Partner.NumberIssuedPromoCodes);
+		}
+
+		[Fact]
 		public async Task SetPartnerPromoCodeLimitAsync_WhenSetNewLimitWithInActivePreviousLimit_CancelDateForPreviousLimitShouldNotBeSetup()
 		{
 			// Arrange
@@ -166,88 +248,6 @@ namespace PromoCodeFactory.UnitTests.BusinessLogic
 				patnerLimit => patnerLimit.CancelDate != null
 					&& patnerLimit.CancelDate.Equals(expectedResult.CancelDate)
 					&& patnerLimit.EndDate.Equals(expectedResult.EndDate));
-		}
-
-		[Fact]
-		public async Task SetPartnerPromoCodeLimitAsync_WhenSetNewLimitWithInactivePreviousLimit_NumberIssuedPromoCodesShouldNotBeReset()
-		{
-			// Arrange
-			var autoFixture = new Fixture();
-			var partnerId = Guid.Parse("def47943-7aaf-44a1-ae21-05aa4948b165");
-			var numberIssuedPromoCodes = 5;
-			var partner = autoFixture
-				.Build<Partner>()
-				.With(x => x.Id, partnerId)
-				.With(x => x.NumberIssuedPromoCodes, numberIssuedPromoCodes)
-				.With(
-					x => x.PartnerLimits,
-					new List<PartnerPromoCodeLimit>
-					{
-						new PartnerPromoCodeLimit
-						{
-							CancelDate = null,
-							EndDate = DateTime.Now.AddYears(-1)
-						}
-					})
-				.Create();
-
-			var requestDto = autoFixture
-				.Build<PartnerPromoCodeLimitRequestDto>()
-				.With(x => x.EndDate, DateTime.Now.AddYears(1).ToDateString())
-				.Create();
-
-			var expectedNumberIssuedPromoCodes = 5;
-
-			_partnerRepositoryMock
-				.Setup(x => x.GetByIdAsync(It.IsAny<Expression<Func<Partner, bool>>>(), nameof(Partner.PartnerLimits), false))
-				.ReturnsAsync(partner);
-
-			// Act
-			var actionResult = await _partnerService.SetPartnerPromoCodeLimitAsync(partnerId, requestDto);
-
-			// Assert
-			Assert.Equal(expectedNumberIssuedPromoCodes, actionResult.Partner.NumberIssuedPromoCodes);
-		}
-
-		[Fact]
-		public async Task SetPartnerPromoCodeLimitAsync_WhenSetNewLimitWithActivePreviousLimit_NumberIssuedPromoCodesShouldBeReset()
-		{
-			// Arrange
-			var autoFixture = new Fixture();
-			var partnerId = Guid.Parse("def47943-7aaf-44a1-ae21-05aa4948b165");
-			var numberIssuedPromoCodes = 5;
-			var partner = autoFixture
-				.Build<Partner>()
-				.With(x => x.Id, partnerId)
-				.With(x => x.NumberIssuedPromoCodes, numberIssuedPromoCodes)
-				.With(
-					x => x.PartnerLimits,
-					new List<PartnerPromoCodeLimit>
-					{
-						new PartnerPromoCodeLimit
-						{
-							CancelDate = null,
-							EndDate = DateTime.Now.AddYears(5)
-						}
-					})
-				.Create();
-
-			var requestDto = autoFixture
-				.Build<PartnerPromoCodeLimitRequestDto>()
-				.With(x => x.EndDate, DateTime.Now.AddYears(1).ToDateString())
-				.Create();
-
-			var expectedNumberIssuedPromoCodes = 0;
-
-			_partnerRepositoryMock
-				.Setup(x => x.GetByIdAsync(It.IsAny<Expression<Func<Partner, bool>>>(), nameof(Partner.PartnerLimits), false))
-				.ReturnsAsync(partner);
-
-			// Act
-			var actionResult = await _partnerService.SetPartnerPromoCodeLimitAsync(partnerId, requestDto);
-
-			// Assert
-			Assert.Equal(expectedNumberIssuedPromoCodes, actionResult.Partner.NumberIssuedPromoCodes);
 		}
 
 		[Fact]
