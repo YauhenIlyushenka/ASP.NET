@@ -1,18 +1,24 @@
-﻿using System;
+﻿using PromoCodeFactory.Core.Domain;
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
-using PromoCodeFactory.Core.Domain;
 
 namespace PromoCodeFactory.Core.Abstractions.Repositories
 {
-	public interface IRepository<T> where T: BaseEntity
+	public interface IRepository<T, TId> where T : IEntity<TId>
 	{
-		Task<IList<T>> GetAllAsync();
+		Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, string includes = null, bool asNoTracking = false);
 
-		Task<T> GetByIdAsync(Guid id);
+		Task<T> GetByIdAsync(Expression<Func<T, bool>> filter, string includes = null, bool asNoTracking = false);
 
-		Task CreateAsync(T entity);
+		Task<T> AddAsync(T entity);
 
-		Task DeleteAsync(T entity);
+		void Update(T entity);
+
+		bool Delete(T entity);
+
+		Task SaveChangesAsync(CancellationToken cancellationToken = default);
 	}
 }

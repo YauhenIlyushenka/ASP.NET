@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
-using PromoCodeFactory.Core.Domain.Administration.Enum;
+using PromoCodeFactory.Core.Domain.Enums;
 using PromoCodeFactory.Core.Helpers;
 using PromoCodeFactory.WebHost.Models.Request.Employee;
 using System.Linq;
 
 namespace PromoCodeFactory.WebHost.Infrastructure.Validators
 {
-	public class EmployeeValidator : BaseEmployeeValidator<EmployeeRequest>
+	public class EmployeeValidator: BaseCommonValidator<EmployeeRequest>
 	{
 		public EmployeeValidator()
 		{
@@ -16,6 +16,9 @@ namespace PromoCodeFactory.WebHost.Infrastructure.Validators
 		}
 
 		private bool ValidateRoleField(Role enteredRole)
-			=> EnumHelper.ToList<Role>().Where(role => role != Role.None).Any(role => role == enteredRole);
+			=> EnumHelper
+			.ToList<Role>()
+			.Where(role => role != Role.None)
+			.Any(role => role == enteredRole);
 	}
 }

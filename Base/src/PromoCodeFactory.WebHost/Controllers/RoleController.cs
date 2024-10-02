@@ -29,14 +29,13 @@ namespace PromoCodeFactory.WebHost.Controllers
 		public async Task<List<RoleItemResponse>> GetRolesAsync()
 		{
 			var roles = await _roleService.GetAllAsync();
-			var rolesModel = roles.Select(x => new RoleItemResponse
+
+			return roles.Select(x => new RoleItemResponse
 			{
 				Id = x.Id,
 				Name = x.Name,
 				Description = x.Description
-			}).ToList();
-
-			return rolesModel;
+			}).ToList(); ;
 		}
 	}
 }

@@ -33,14 +33,12 @@ namespace PromoCodeFactory.WebHost.Controllers
 		public async Task<List<EmployeeShortResponse>> GetEmployeesAsync()
 		{
 			var employees = await _employeeService.GetAllAsync();
-			var employeesModels = employees.Select(x => new EmployeeShortResponse
+			return employees.Select(x => new EmployeeShortResponse
 			{
 				Id = x.Id,
 				Email = x.Email,
 				FullName = x.FullName,
 			}).ToList();
-
-			return employeesModels;
 		}
 
 		/// <summary>
@@ -48,24 +46,23 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpGet("{id:guid}")]
-		public async Task<EmployeeResponse> GetEmployeeByIdAsync(Guid id)
+		public async Task<EmployeeResponse> GetEmployeeByIdAsync([FromRoute] Guid id)
 		{
 			var employee = await _employeeService.GetByIdAsync(id);
-			var employeeModel = new EmployeeResponse
+
+			return new EmployeeResponse
 			{
 				Id = employee.Id,
 				Email = employee.Email,
-				Roles = employee.Roles.Select(x => new RoleItemResponse
+				Role = new RoleItemResponse
 				{
-					Id = x.Id,
-					Name = x.Name,
-					Description = x.Description
-				}).ToList(),
+					Id = employee.Role.Id,
+					Name = employee.Role.Name,
+					Description = employee.Role.Description
+				},
 				FullName = employee.FullName,
 				AppliedPromocodesCount = employee.AppliedPromocodesCount
 			};
-
-			return employeeModel;
 		}
 
 		/// <summary>
@@ -73,9 +70,40 @@ namespace PromoCodeFactory.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPost]
-		public async Task CreateEmployee([FromBody] EmployeeRequest model)
+		public async Task<EmployeeResponse> CreateEmployeeAsync([FromBody] EmployeeRequest model)
 		{
-			await _employeeService.CreateAsync(new EmpoyeeRequestDto
+			var employee = await _employeeService.CreateAsync(new EmployeeRequestDto
+			{
+				FirstName = model.FirstName,
+				LastName = model.LastName,
+				Email = model.Email,
+				AppliedPromocodesCount = model.AppliedPromocodesCount,
+				Role = model.Role
+			});
+
+			return new EmployeeResponse
+			{
+				Id = employee.Id,
+				Email = employee.Email,
+				Role = new RoleItemResponse
+				{
+					Id = employee.Role.Id,
+					Name = employee.Role.Name,
+					Description = employee.Role.Description
+				},
+				FullName = employee.FullName,
+				AppliedPromocodesCount = employee.AppliedPromocodesCount
+			};
+		}
+
+		/// <summary>
+		/// Update employee
+		/// </summary>
+		/// <returns></returns>
+		[HttpPut("{id:guid}")]
+		public async Task UpdateEmployeeAsync([FromRoute] Guid id, [FromBody] EmployeeRequest model)
+		{
+			await _employeeService.UpdateAsync(id, new EmployeeRequestDto
 			{
 				FirstName = model.FirstName,
 				LastName = model.LastName,
@@ -86,29 +114,11 @@ namespace PromoCodeFactory.WebHost.Controllers
 		}
 
 		/// <summary>
-		/// Update employee
-		/// </summary>
-		/// <returns></returns>
-		[HttpPut]
-		public async Task UpdateEmployee([FromBody] EmployeeRequestExtended model)
-		{
-			await _employeeService.UpdateAsync(new EmployeeRequestExtendedDto
-			{
-				Id = model.Id,
-				FirstName = model.FirstName,
-				LastName = model.LastName,
-				Email = model.Email,
-				AppliedPromocodesCount = model.AppliedPromocodesCount,
-				Roles = model.Roles
-			});
-		}
-
-		/// <summary>
 		/// Delete employee by Id
 		/// </summary>
 		/// <returns></returns>
 		[HttpDelete("{id:guid}")]
-		public async Task DeleteEmployee(Guid id)
+		public async Task DeleteEmployeeAsync([FromRoute] Guid id)
 		{
 			await _employeeService.DeleteAsync(id);
 		}

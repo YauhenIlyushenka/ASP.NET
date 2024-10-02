@@ -6,19 +6,19 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 {
 	public class RoleService : IRoleService
 	{
-		private readonly IRepository<Role> _roleRepository;
+		private readonly IRepository<Role, Guid> _roleRepository;
 
-		public RoleService(IRepository<Role> rolesRepository)
+		public RoleService(IRepository<Role, Guid> rolesRepository)
 		{
 			_roleRepository = rolesRepository;
 		}
 
 		public async Task<List<RoleItemResponseDto>> GetAllAsync()
-			=> (await _roleRepository.GetAllAsync()).Select(x => new RoleItemResponseDto
+			=> (await _roleRepository.GetAllAsync(asNoTracking: true)).Select(x => new RoleItemResponseDto
 			{
 				Id = x.Id,
 				Name = x.Name,
-				Description = x.Description
+				Description = x.DescriptionRole
 			}).ToList();
 	}
 }

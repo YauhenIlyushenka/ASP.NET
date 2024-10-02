@@ -1,9 +1,10 @@
-﻿using PromoCodeFactory.Core.Domain.Administration.Enum;
+﻿using PromoCodeFactory.Core.Domain.Enums;
 
 namespace PromoCodeFactory.WebHost.Models.Request.Employee
 {
-	public class EmployeeRequest : BaseEmployeeRequest
+	public class EmployeeRequest : BaseCommonRequest
 	{
+		public int AppliedPromocodesCount { get; set; }
 		public Role Role { get; set; }
 	}
 }
