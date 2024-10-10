@@ -24,6 +24,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			services.AddScoped<ICustomerService, CustomerService>();
 			services.AddScoped<IPreferenceService, PreferenceService>();
 			services.AddScoped<IPromocodeService, PromocodeService>();
+			services.AddScoped<IPartnerService, PartnerService>();
 		}
 
 		private static void AddDataAccessLayerRepositories(this IServiceCollection services)
@@ -33,6 +34,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			services.AddScoped<IRepository<Customer, Guid>, CustomerRepository>();
 			services.AddScoped<IRepository<Preference, Guid>, PreferenceRepository>();
 			services.AddScoped<IRepository<PromoCode, Guid>, PromocodeRepository>();
+			services.AddScoped<IRepository<Partner, Guid>, PartnerRepository>();
 		}
 	}
 }

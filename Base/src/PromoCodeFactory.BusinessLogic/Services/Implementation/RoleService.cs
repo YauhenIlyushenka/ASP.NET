@@ -18,7 +18,7 @@ namespace PromoCodeFactory.BusinessLogic.Services.Implementation
 			{
 				Id = x.Id,
 				Name = x.Name,
-				Description = x.DescriptionRole
+				Description = x.Description
 			}).ToList();
 	}
 }

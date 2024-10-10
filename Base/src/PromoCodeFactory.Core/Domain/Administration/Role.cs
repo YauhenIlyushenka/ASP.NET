@@ -8,7 +8,7 @@ namespace PromoCodeFactory.Core.Domain.Administration
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; }
-		public string DescriptionRole { get; set; }
+		public string Description { get; set; }
 		public ICollection<Employee> Employees { get; set; }
 
 		public Role()

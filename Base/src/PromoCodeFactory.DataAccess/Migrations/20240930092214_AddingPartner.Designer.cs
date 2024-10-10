@@ -11,8 +11,8 @@ using PromoCodeFactory.DataAccess;
 namespace PromoCodeFactory.DataAccess.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240926152243_ModifiedModel")]
-    partial class ModifiedModel
+    [Migration("20240930092214_AddingPartner")]
+    partial class AddingPartner
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace PromoCodeFactory.DataAccess.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("RoleId");
 
-                    b.Property<string>("DescriptionRole")
+                    b.Property<string>("Description")
                         .HasMaxLength(64)
                         .HasColumnType("TEXT");
 
@@ -109,6 +109,57 @@ namespace PromoCodeFactory.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("PromoCodeFactory.Core.Domain.PromoCodeManagement.Partner", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("PartnerId");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(32)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("NumberIssuedPromoCodes")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Partners");
+                });
+
+            modelBuilder.Entity("PromoCodeFactory.Core.Domain.PromoCodeManagement.PartnerPromoCodeLimit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("PartnerPromocodeLimitId");
+
+                    b.Property<DateTime?>("CancelDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Limit")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("PartnerId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("PartnerPromoCodeLimits");
                 });
 
             modelBuilder.Entity("PromoCodeFactory.Core.Domain.PromoCodeManagement.Preference", b =>
@@ -198,6 +249,17 @@ namespace PromoCodeFactory.DataAccess.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("PromoCodeFactory.Core.Domain.PromoCodeManagement.PartnerPromoCodeLimit", b =>
+                {
+                    b.HasOne("PromoCodeFactory.Core.Domain.PromoCodeManagement.Partner", "Partner")
+                        .WithMany("PartnerLimits")
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Partner");
+                });
+
             modelBuilder.Entity("PromoCodeFactory.Core.Domain.PromoCodeManagement.PromoCode", b =>
                 {
                     b.HasOne("PromoCodeFactory.Core.Domain.PromoCodeManagement.Customer", "Customer")
@@ -238,6 +300,11 @@ namespace PromoCodeFactory.DataAccess.Migrations
             modelBuilder.Entity("PromoCodeFactory.Core.Domain.PromoCodeManagement.Customer", b =>
                 {
                     b.Navigation("PromoCodes");
+                });
+
+            modelBuilder.Entity("PromoCodeFactory.Core.Domain.PromoCodeManagement.Partner", b =>
+                {
+                    b.Navigation("PartnerLimits");
                 });
 
             modelBuilder.Entity("PromoCodeFactory.Core.Domain.PromoCodeManagement.Preference", b =>

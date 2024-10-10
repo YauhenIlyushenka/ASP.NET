@@ -18,6 +18,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			services.AddValidatorsFromAssemblyContaining<EmployeeValidator>();
 			services.AddValidatorsFromAssemblyContaining<CustomerValidator>();
 			services.AddValidatorsFromAssemblyContaining<PromocodeValidator>();
+			services.AddValidatorsFromAssemblyContaining<PartnerPromocodeLimitValidator>();
 		}
 
 		public static void AddSwaggerServices(this IServiceCollection services)
@@ -53,9 +54,10 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
 			var dbContext = scope.ServiceProvider.GetService<DatabaseContext>();
 
-			dbContext.AddRange(FakeDataFactory.Roles);
-			dbContext.AddRange(FakeDataFactory.Employees);
-			dbContext.AddRange(FakeDataFactory.Customers);
+			//dbContext.AddRange(FakeDataFactory.Roles);
+			//dbContext.AddRange(FakeDataFactory.Employees);
+			//dbContext.AddRange(FakeDataFactory.Customers);
+			dbContext.AddRange(FakeDataFactory.Partners);
 
 			dbContext.SaveChanges();
 		}

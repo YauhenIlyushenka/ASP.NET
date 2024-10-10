@@ -16,6 +16,8 @@ namespace PromoCodeFactory.DataAccess
 		public DbSet<PromoCode> PromoCodes { get; set; }
 		public DbSet<Preference> Preferences { get; set; }
 		public DbSet<Customer> Customers { get; set; }
+		public DbSet<Partner> Partners { get; set; }
+		public DbSet<PartnerPromoCodeLimit> PartnerPromoCodeLimits { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -31,7 +33,7 @@ namespace PromoCodeFactory.DataAccess
 				entity.HasKey(x => x.Id);
 				entity.Property(x => x.Id).HasColumnName("RoleId");
 				entity.Property(x => x.Name).HasMaxLength(32);
-				entity.Property(x => x.DescriptionRole).HasMaxLength(64);
+				entity.Property(x => x.Description).HasMaxLength(64);
 			});
 
 			modelBuilder.Entity<Employee>(entity =>
@@ -95,6 +97,25 @@ namespace PromoCodeFactory.DataAccess
 						x => x.HasOne<Preference>().WithMany().HasForeignKey("PreferenceId"),
 						x => x.HasOne<Customer>().WithMany().HasForeignKey("CustomerId"),
 						j => j.HasKey("CustomerId", "PreferenceId"));
+			});
+
+			modelBuilder.Entity<Partner>(entity =>
+			{
+				entity
+					.HasMany(partner => partner.PartnerLimits)
+					.WithOne(partnerLimit => partnerLimit.Partner)
+					.HasForeignKey(partnerLimit => partnerLimit.PartnerId);
+
+				entity.HasKey(x => x.Id);
+				entity.Property(x => x.Id).HasColumnName("PartnerId");
+				entity.Property(x => x.Name).HasMaxLength(32);
+			});
+
+			modelBuilder.Entity<PartnerPromoCodeLimit>(entity =>
+			{
+				entity.HasKey(x => x.Id);
+				entity.Property(x => x.Id).HasColumnName("PartnerPromocodeLimitId");
+				entity.Property(x => x.CancelDate).IsRequired(false);
 			});
 		}
 	}
