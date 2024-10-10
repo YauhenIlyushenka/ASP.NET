@@ -37,7 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      ROOT_PROJECT_PATH: Base/src
       ROOT_TEST_PROJECT_PATH: Base/src/PromoCodeFactory.UnitTests
       
     steps:
@@ -48,9 +47,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-        
-    - name: Restore dependencies for the project
-      run: dotnet restore ${{ env.ROOT_PROJECT_PATH }}/PromoCodeFactory.sln
 
     - name: Test
       run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/PromoCodeFactory.UnitTests.csproj
