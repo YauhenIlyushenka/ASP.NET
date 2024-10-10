@@ -11,3 +11,4 @@ runs:
         
     - name: Restore dependencies for the project
       run: dotnet restore Base/src/PromoCodeFactory.sln
+      shell: bash
