@@ -16,22 +16,30 @@ jobs:
 
     env:
       ROOT_PROJECT_PATH: Base/src
-      ROOT_TEST_PROJECT_PATH: Base/src/PromoCodeFactory.UnitTests
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-        
-    - name: Restore dependencies for the project
-      run: dotnet restore ${{ env.ROOT_PROJECT_PATH }}/PromoCodeFactory.sln
+    - name: Setup .NET and Restore Dependecnies
+      uses: ./.github/actions/Setup-NET-and-Restore-Dependecies
       
     - name: Build project
       run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/PromoCodeFactory.sln
+
+  test:
+  
+    runs-on: ubuntu-latest
+    
+    env:
+      ROOT_TEST_PROJECT_PATH: Base/src/PromoCodeFactory.UnitTests
       
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET and Restore Dependecnies
+      uses: ./.github/actions/Setup-NET-and-Restore-Dependecies
+
     - name: Test
       run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/PromoCodeFactory.UnitTests.csproj
