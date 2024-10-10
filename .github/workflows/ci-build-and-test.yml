@@ -39,7 +39,7 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Setup .NET and Restore Dependecnies
-      uses: ./.github/actions/Setup-NET-and-Restore-dependencies
+      uses: ./.github/actions/Setup-NET-and-Restore-Dependecies
 
     - name: Test
       run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/PromoCodeFactory.UnitTests.csproj
