@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-
+    name: Build
     runs-on: ubuntu-latest
 
     env:
@@ -28,7 +28,8 @@ jobs:
       run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/PromoCodeFactory.sln
 
   test:
-  
+    name: Testing
+    needs: build
     runs-on: ubuntu-latest
     
     env:
