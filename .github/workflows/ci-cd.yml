@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-
+    name: Build
     runs-on: ubuntu-latest
 
     env:
@@ -28,7 +28,8 @@ jobs:
       run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/PromoCodeFactory.sln
 
   test:
-  
+    name: Testing
+    needs: build
     runs-on: ubuntu-latest
     
     env:
@@ -43,3 +44,14 @@ jobs:
 
     - name: Test
       run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/PromoCodeFactory.UnitTests.csproj
+      
+  docker:
+    name: Build Docker Image and Push
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Build Docker Image
+      run: |
+        echo "Build Docker Image and push"
+
