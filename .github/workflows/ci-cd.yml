@@ -46,12 +46,24 @@ jobs:
       run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/PromoCodeFactory.UnitTests.csproj
       
   docker:
-    name: Build Docker Image and Push
+    name: Build and Push Docker Image
     needs: test
     runs-on: ubuntu-latest
 
     steps:
-    - name: Build Docker Image
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # github registry with repo secrets
+    - name: Log in to GitHub Container Registry
+      run: echo ${{ secrets.GH_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Build and push Docker image
       run: |
-        echo "Build Docker Image and push"
+        REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+        docker build ./ -t ghcr.io/${REPO_NAME}/promocodefactory:latest
+        docker push ghcr.io/${REPO_NAME}/promocodefactory:latest
 
