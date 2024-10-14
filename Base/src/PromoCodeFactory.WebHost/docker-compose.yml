@@ -1,6 +1,6 @@
 ﻿services:
   promocodefactory:
-    image: ghcr.io/giuliomat/bdt-project:latest
+    image: ghcr.io/yauhenilyushenka/promocodefactory:latest
     ports:
       - "8080:8080"
     container_name: container_promocodefactry
