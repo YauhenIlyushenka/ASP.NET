@@ -65,6 +65,6 @@ jobs:
       run: |
         REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
         cd ./Base/src/
-        docker build PromoCodeFactory.WebHost -t ghcr.io/${REPO_NAME}/promocodefactory:latest
+        docker build PromoCodeFactory.WebHost -t ghcr.io/${REPO_NAME}/promocodefactory:latest .
         docker push ghcr.io/${REPO_NAME}/promocodefactory:latest
 
