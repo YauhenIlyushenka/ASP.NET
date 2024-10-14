@@ -15,7 +15,7 @@ COPY ["PromoCodeFactory.Core/PromoCodeFactory.Core.csproj", "PromoCodeFactory.Co
 RUN dotnet restore "PromoCodeFactory.WebHost/PromoCodeFactory.WebHost.csproj"
 
 ## Copy full solution over
-COPY ./ ./
+COPY . .
 
 ## Build the app
 RUN dotnet build "PromoCodeFactory.WebHost/PromoCodeFactory.WebHost.csproj" -c Release --no-restore
@@ -34,6 +34,6 @@ RUN dotnet publish -c Release -o /app/publish --no-restore --no-build
 
 ## Run the app
 FROM base AS final
-COPY --from=publish /app/publish ./
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "PromoCodeFactory.WebHost.dll"]
 CMD ["--urls", "http://*:8080"]
