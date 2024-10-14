@@ -62,9 +62,9 @@ jobs:
       run: echo ${{ secrets.GH_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Build and push Docker image
+      working-directory: ./Base/src/
       run: |
         REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-        cd ./Base/src/
         docker build PromoCodeFactory.WebHost -t ghcr.io/${REPO_NAME}/promocodefactory:latest
         docker push ghcr.io/${REPO_NAME}/promocodefactory:latest
 
