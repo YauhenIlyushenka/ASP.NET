@@ -64,6 +64,7 @@ jobs:
     - name: Build and push Docker image
       run: |
         REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-        docker build -f Base/src/PromoCodeFactory.WebHost/Dockerfile -t ghcr.io/${REPO_NAME}/promocodefactory:latest
+        cd Base/src/
+        docker build PromoCodeFactory.WebHost/Dockerfile -t ghcr.io/${REPO_NAME}/promocodefactory:latest
         docker push ghcr.io/${REPO_NAME}/promocodefactory:latest
 
