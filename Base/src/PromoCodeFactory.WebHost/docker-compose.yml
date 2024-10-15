@@ -1,20 +1,21 @@
 ﻿services:
   promocodefactory:
+    container_name: container_promocodefactory
     image: ghcr.io/yauhenilyushenka/promocodefactory:latest
     ports:
       - "8080:8080"
-    container_name: container_promocodefactry
     depends_on:
       - db
   db:
+    container_name: container_db_postgresql
     image: postgres:latest
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: promocodefactorydb
     volumes:
       - db_data:/var/lib/postgresql/data 
-    container_name: container_db_postgresql
 volumes:
   db_data:
