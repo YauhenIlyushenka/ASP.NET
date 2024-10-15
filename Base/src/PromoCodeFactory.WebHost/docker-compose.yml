@@ -2,19 +2,26 @@
   promocodefactory:
     container_name: container_promocodefactory
     image: ghcr.io/yauhenilyushenka/promocodefactory:latest
+    # build:
+    #   context: ..
+    #   dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+       condition: service_healthy
   db:
     container_name: container_db_postgresql
     image: postgres:latest
+    hostname: postgres
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: promocodefactorydb
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U postgres -d promocodefactorydb -c 'SELECT 1' || exit 1"]
     volumes:
       - db_data:/var/lib/postgresql/data 
 volumes:
