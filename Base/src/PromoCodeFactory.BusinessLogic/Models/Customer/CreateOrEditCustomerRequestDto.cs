@@ -4,9 +4,9 @@ namespace PromoCodeFactory.BusinessLogic.Models.Customer
 {
 	public class CreateOrEditCustomerRequestDto
 	{
-		public string FirstName { get; init; }
-		public string LastName { get; init; }
-		public string Email { get; init; }
+		public required string FirstName { get; init; }
+		public required string LastName { get; init; }
+		public required string Email { get; init; }
 		public List<EnumPreference> Preferences { get; init; }
 	}
 }
