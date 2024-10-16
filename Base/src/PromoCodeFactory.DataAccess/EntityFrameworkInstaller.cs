@@ -7,7 +7,7 @@ namespace PromoCodeFactory.DataAccess
 	{
 		public static void ConfigureDbContext(this IServiceCollection services, string connectionString)
 		{
-			services.AddDbContext<DatabaseContext>(optionsBuilder => optionsBuilder.UseSqlite(connectionString));
+			services.AddDbContext<DatabaseContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
 		}
 	}
 }

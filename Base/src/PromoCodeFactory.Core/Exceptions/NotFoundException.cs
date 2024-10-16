@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using System;
+﻿using System;
 
 namespace PromoCodeFactory.Core.Exceptions
 {
@@ -17,11 +16,6 @@ namespace PromoCodeFactory.Core.Exceptions
 
 		public NotFoundException(string message, Exception inner)
 			: base(message, inner)
-		{
-		}
-
-		protected NotFoundException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
 		{
 		}
 	}

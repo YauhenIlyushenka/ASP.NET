@@ -46,7 +46,7 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 
 			//dbContext.Database.EnsureDeleted();
 			dbContext.Database.Migrate();
-			//Seed(scope.ServiceProvider);
+			Seed(scope.ServiceProvider);
 		}
 
 		private static void Seed(IServiceProvider serviceProvider)
@@ -54,9 +54,9 @@ namespace PromoCodeFactory.WebHost.Infrastructure
 			using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
 			var dbContext = scope.ServiceProvider.GetService<DatabaseContext>();
 
-			//dbContext.AddRange(FakeDataFactory.Roles);
-			//dbContext.AddRange(FakeDataFactory.Employees);
-			//dbContext.AddRange(FakeDataFactory.Customers);
+			dbContext.AddRange(FakeDataFactory.Roles);
+			dbContext.AddRange(FakeDataFactory.Employees);
+			dbContext.AddRange(FakeDataFactory.Customers);
 			dbContext.AddRange(FakeDataFactory.Partners);
 
 			dbContext.SaveChanges();

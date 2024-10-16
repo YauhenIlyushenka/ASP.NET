@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PromoCodeFactory.Core", "Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PromoCodeFactory.BusinessLogic", "PromoCodeFactory.BusinessLogic\PromoCodeFactory.BusinessLogic.csproj", "{78FFDD1F-E658-4BF5-8F92-BC3117D54FF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PromoCodeFactory.UnitTests", "PromoCodeFactory.UnitTests\PromoCodeFactory.UnitTests.csproj", "{993E75B4-3402-4415-AA9A-073C2F731792}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PromoCodeFactory.UnitTests", "PromoCodeFactory.UnitTests\PromoCodeFactory.UnitTests.csproj", "{993E75B4-3402-4415-AA9A-073C2F731792}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
