@@ -12,11 +12,11 @@ namespace PromoCodeFactory.WebHost.Infrastructure.Validators
 		public CustomerValidator()
 		{
 			RuleFor(x => x.Preferences)
-				.Must(ValidateRolesFields)
+				.Must(ValidatePreferencesFields)
 				.WithMessage($"Invalid Preference has been detected. You should choose any preferences from the pull: {string.Join(", ", EnumHelper.ToList<Preference>().Where(preference => preference != Preference.None))}");
 		}
 
-		private bool ValidateRolesFields(List<Preference> enteredPreferences)
+		private bool ValidatePreferencesFields(List<Preference> enteredPreferences)
 		{
 			foreach (var preference in enteredPreferences)
 			{

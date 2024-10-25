@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace PromoCodeFactory.Core.Exceptions
 {
@@ -17,11 +16,6 @@ namespace PromoCodeFactory.Core.Exceptions
 
 		public BadRequestException(string message, Exception inner)
 			: base(message, inner)
-		{
-		}
-
-		protected BadRequestException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
 		{
 		}
 	}
