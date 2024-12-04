@@ -1,9 +1,9 @@
-﻿using Pcf.Administration.BusinessLogic.Models;
+﻿using Pcf.Administration.BLL.Models;
 using Pcf.Administration.Core.Abstractions.Repositories;
 using Pcf.Administration.Core.Domain.Administration;
 using Pcf.Administration.Core.Exceptions;
 
-namespace Pcf.Administration.BusinessLogic.Services.Implementation
+namespace Pcf.Administration.BLL.Services.Implementation
 {
 	public class EmployeeService : BaseService, IEmployeeService
 	{

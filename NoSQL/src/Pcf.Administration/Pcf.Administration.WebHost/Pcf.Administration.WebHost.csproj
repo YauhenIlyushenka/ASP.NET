@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Pcf.Administration.BusinessLogic\Pcf.Administration.BusinessLogic.csproj" />
+      <ProjectReference Include="..\Pcf.Administration.BLL\Pcf.Administration.BLL.csproj" />
       <ProjectReference Include="..\Pcf.Administration.Core\Pcf.Administration.Core.csproj" />
     </ItemGroup>
 

@@ -1,8 +1,8 @@
-﻿using Pcf.Administration.BusinessLogic.Models;
+﻿using Pcf.Administration.BLL.Models;
 using Pcf.Administration.Core.Abstractions.Repositories;
 using Pcf.Administration.Core.Domain.Administration;
 
-namespace Pcf.Administration.BusinessLogic.Services.Implementation
+namespace Pcf.Administration.BLL.Services.Implementation
 {
 	public class RoleService : IRoleService
 	{

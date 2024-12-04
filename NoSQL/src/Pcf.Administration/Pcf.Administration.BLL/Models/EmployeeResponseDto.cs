@@ -1,4 +1,4 @@
-﻿namespace Pcf.Administration.BusinessLogic.Models
+﻿namespace Pcf.Administration.BLL.Models
 {
 	public class EmployeeResponseDto
 	{

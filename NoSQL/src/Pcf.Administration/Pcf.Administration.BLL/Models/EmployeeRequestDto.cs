@@ -1,6 +1,6 @@
 ﻿using EnumRole = Pcf.Administration.Core.Domain.Enums.Role;
 
-namespace Pcf.Administration.BusinessLogic.Models
+namespace Pcf.Administration.BLL.Models
 {
 	public class EmployeeRequestDto
 	{

@@ -1,4 +1,4 @@
-﻿namespace Pcf.Administration.BusinessLogic.Services.Implementation
+﻿namespace Pcf.Administration.BLL.Services.Implementation
 {
 	public abstract class BaseService
 	{

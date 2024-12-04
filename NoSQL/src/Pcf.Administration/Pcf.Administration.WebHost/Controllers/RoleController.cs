@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Pcf.Administration.BusinessLogic.Services;
+using Pcf.Administration.BLL.Services;
 using Pcf.Administration.WebHost.Models.Response;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Pcf.Administration.WebHost.Controllers
 				Id = x.Id,
 				Name = x.Name,
 				Description = x.Description
-			}).ToList(); ;
+			}).ToList();
 		}
 	}
 }

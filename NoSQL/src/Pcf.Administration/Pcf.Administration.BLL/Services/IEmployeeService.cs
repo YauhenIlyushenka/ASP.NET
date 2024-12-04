@@ -1,6 +1,6 @@
-﻿using Pcf.Administration.BusinessLogic.Models;
+﻿using Pcf.Administration.BLL.Models;
 
-namespace Pcf.Administration.BusinessLogic.Services
+namespace Pcf.Administration.BLL.Services
 {
 	public interface IEmployeeService
 	{

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Pcf.Administration.BusinessLogic.Models;
-using Pcf.Administration.BusinessLogic.Services;
+using Pcf.Administration.BLL.Models;
+using Pcf.Administration.BLL.Services;
 using Pcf.Administration.WebHost.Models.Request;
 using Pcf.Administration.WebHost.Models.Response;
 using System;

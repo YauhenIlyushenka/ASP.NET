@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Pcf.Administration.BusinessLogic.Services.Implementation;
-using Pcf.Administration.BusinessLogic.Services;
+using Pcf.Administration.BLL.Services;
+using Pcf.Administration.BLL.Services.Implementation;
 using Pcf.Administration.Core.Abstractions.Repositories;
 using Pcf.Administration.DataAccess.Repositories;
 
