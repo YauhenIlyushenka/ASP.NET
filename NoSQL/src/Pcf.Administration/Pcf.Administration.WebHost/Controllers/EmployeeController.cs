@@ -124,7 +124,6 @@ namespace Pcf.Administration.WebHost.Controllers
 		/// <param name="id">Employee Id</param>
 		/// <returns></returns>
 		[HttpPost("{id:guid}/appliedPromocodes")]
-
 		public async Task UpdateAppliedPromocodesAsync(Guid id)
 			=> await _employeeService.UpdateAppliedPromocodesAsync(id);
 	}
