@@ -5,13 +5,13 @@ on:
     branches:
       - "main"
     paths:
-      - 'src/Pcf.Administration/**'   
+      - 'NoSQL/src/Pcf.Administration/**'   
 
   pull_request:
     branches:
       - "main"
     paths:
-      - 'src/Pcf.Administration/**'  
+      - 'NoSQL/src/Pcf.Administration/**'  
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ROOT_PROJECT_PATH: src/Pcf.Administration
+      ROOT_PROJECT_PATH: NoSQL/src/Pcf.Administration
 
     steps:
     - name: Checkout repository
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      ROOT_TEST_PROJECT_PATH: src/Pcf.Administration/Pcf.Administration.IntegrationTests
+      ROOT_TEST_PROJECT_PATH: NoSQL/src/Pcf.Administration/Pcf.Administration.IntegrationTests
       
     steps:
     - name: Checkout repository
@@ -54,7 +54,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore Dependecnies
-      run: dotnet restore src/Pcf.Administration/Pcf.Administration.sln
+      run: dotnet restore NoSQL/src/Pcf.Administration/Pcf.Administration.sln
 
     - name: Test
       run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/Pcf.Administration.IntegrationTests.csproj
@@ -98,7 +98,7 @@ jobs:
     - name: Build and push Docker Image
       uses: docker/build-push-action@v6.9.0
       with:
-        context: ./src/Pcf.Administration
+        context: ./NoSQL/src/Pcf.Administration
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         labels: ${{ steps.meta.outputs.labels }}
