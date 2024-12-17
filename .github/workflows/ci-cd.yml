@@ -8,14 +8,10 @@ on:
     branches: [ "main" ]
     paths:
       - 'Base/**'
-    paths-ignore:
-      - 'NoSQL/**'
   pull_request:
     branches: [ "main" ]
     paths:
       - 'Base/**'
-    paths-ignore:
-      - 'NoSQL/**'
 
 jobs:
   build:
