@@ -23,7 +23,6 @@ namespace Pcf.Administration.IntegrationTests.Components.WebHost.Infrastructure.
 		[Fact]
 		public void Should_HaveError_When_FirstName_Is_Empty()
 		{
-
 			// Arrange
 			_fixture.Customize<Role>(c => c.FromFactory(() =>
 			{
