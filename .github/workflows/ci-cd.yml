@@ -6,10 +6,14 @@ name: Monolithic architecture Pcf
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'Base/**'
     paths-ignore:
       - 'NoSQL/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'Base/**'
     paths-ignore:
       - 'NoSQL/**'
 
