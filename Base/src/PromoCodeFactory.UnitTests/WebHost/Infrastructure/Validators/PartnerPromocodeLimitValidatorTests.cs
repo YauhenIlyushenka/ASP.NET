@@ -18,6 +18,7 @@ namespace PromoCodeFactory.UnitTests.WebHost.Infrastructure.Validators
 		[Fact]
 		public void ValidateSetPartnerPromoCodeLimitRequest_WhenRequestIsCorrect_ShouldBeValidatedProperly()
 		{
+
 			// Arrange
 			var autoFixture = new Fixture();
 			var requestDto = autoFixture
