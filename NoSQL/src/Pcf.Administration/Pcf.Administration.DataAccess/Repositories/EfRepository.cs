@@ -1,71 +1,69 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Pcf.Administration.Core.Abstractions.Repositories;
+using Pcf.Administration.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Pcf.Administration.Core.Abstractions.Repositories;
-using Pcf.Administration.Core.Domain;
 
 namespace Pcf.Administration.DataAccess.Repositories
 {
-    public class EfRepository<T>
-        : IRepository<T>
-        where T: BaseEntity
-    {
-        private readonly DataContext _dataContext;
+	public class EfRepository<T, TId> : IRepository<T, TId> where T : class, IBaseEntity<TId>
+	{
+		private readonly DbSet<T> _entitySet;
+		protected readonly DataContext Context;
 
-        public EfRepository(DataContext dataContext)
-        {
-            _dataContext = dataContext;
-        }
-        
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            var entities = await _dataContext.Set<T>().ToListAsync();
+		public EfRepository(DataContext dataContext)
+		{
+			Context = dataContext;
+			_entitySet = Context.Set<T>();
+		}
+		
+		public virtual async Task<IEnumerable<T>> GetAllAsync()
+			=> await _entitySet.ToListAsync();
 
-            return entities;
-        }
+		public virtual async Task<T> GetByIdAsync(TId id)
+		{
+			var predicate = BuildIdPredicate(id);
+			return await _entitySet.FirstOrDefaultAsync(predicate);
+		}
 
-        public async Task<T> GetByIdAsync(Guid id)
-        {
-            var entity = await _dataContext.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
+		public virtual async Task<T> GetFirstWhere(Expression<Func<T, bool>> predicate)
+			=> await _entitySet.FirstOrDefaultAsync(predicate);
 
-            return entity;
-        }
+		public virtual async Task<IEnumerable<T>> GetWhere(Expression<Func<T, bool>> predicate)
+			=> await _entitySet.Where(predicate).ToListAsync();
 
-        public async Task<IEnumerable<T>> GetRangeByIdsAsync(List<Guid> ids)
-        {
-            var entities = await _dataContext.Set<T>().Where(x => ids.Contains(x.Id)).ToListAsync();
-            return entities;
-        }
+		public virtual async Task<T> AddAsync(T entity)
+			=> (await _entitySet.AddAsync(entity)).Entity;
 
-        public async Task<T> GetFirstWhere(Expression<Func<T, bool>> predicate)
-        {
-            return await _dataContext.Set<T>().FirstOrDefaultAsync(predicate);
-        }
+		public virtual Task UpdateAsync(T entity)
+		{
+			Context.Entry(entity).State = EntityState.Modified;
+			return Task.CompletedTask;
+		}
 
-        public async Task<IEnumerable<T>> GetWhere(Expression<Func<T, bool>> predicate)
-        {
-            return await _dataContext.Set<T>().Where(predicate).ToListAsync();
-        }
+		public virtual Task DeleteAsync(T entity)
+		{
+			_entitySet.Remove(entity);
+			Context.Entry(entity).State = EntityState.Deleted;
+			return Task.CompletedTask;
+		}
 
-        public async Task AddAsync(T entity)
-        {
-            await _dataContext.Set<T>().AddAsync(entity);
-            await _dataContext.SaveChangesAsync();
-        }
+		public virtual async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+			=> await Context.SaveChangesAsync(cancellationToken);
 
-        public async Task UpdateAsync(T entity)
-        {
-            await _dataContext.SaveChangesAsync();
-        }
+		private Expression<Func<T, bool>> BuildIdPredicate(TId id)
+		{
+			var parameter = Expression.Parameter(typeof(T), "x");
+			var property = Expression.Property(parameter, "Id");
 
-        public async Task DeleteAsync(T entity)
-        {
-            _dataContext.Set<T>().Remove(entity);
-            await _dataContext.SaveChangesAsync();
-        }
-    }
+			var constant = Expression.Constant(id);
+			var body = Expression.Equal(property, constant);
+
+			return Expression.Lambda<Func<T, bool>>(body, parameter);
+		}
+	}
 }

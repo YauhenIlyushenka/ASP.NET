@@ -1,17 +1,17 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: Monolithic architecture Pcf
+name: CI for Pcf.Administration
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
     paths:
-      - 'Base/**'
+      - 'NoSQL/src/Pcf.Administration/**'   
+
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
     paths:
-      - 'Base/**'
+      - 'NoSQL/src/Pcf.Administration/**'  
 
 jobs:
   build:
@@ -19,17 +19,22 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ROOT_PROJECT_PATH: Base/src
+      ROOT_PROJECT_PATH: NoSQL/src/Pcf.Administration
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup .NET and Restore Dependecnies
-      uses: ./.github/actions/Setup-NET-and-Restore-Dependecies
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore Dependecnies
+      run: dotnet restore ${{ env.ROOT_PROJECT_PATH }}/Pcf.Administration.sln
       
     - name: Build project
-      run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/PromoCodeFactory.sln
+      run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/Pcf.Administration.sln
 
   test:
     name: Testing
@@ -37,17 +42,22 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      ROOT_TEST_PROJECT_PATH: Base/src/PromoCodeFactory.UnitTests
+      ROOT_TEST_PROJECT_PATH: NoSQL/src/Pcf.Administration/Pcf.Administration.IntegrationTests
       
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Setup .NET and Restore Dependecnies
-      uses: ./.github/actions/Setup-NET-and-Restore-Dependecies
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore Dependecnies
+      run: dotnet restore NoSQL/src/Pcf.Administration/Pcf.Administration.sln
 
     - name: Test
-      run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/PromoCodeFactory.UnitTests.csproj
+      run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/Pcf.Administration.IntegrationTests.csproj
 
   docker:
     name: Build and Push Docker Image
@@ -56,7 +66,7 @@ jobs:
     
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: yauhenilyushenka/promocodefactory
+      IMAGE_NAME: yauhenilyushenka/pcf.administration
       IMAGE_TAG: latest
 
     steps:
@@ -88,7 +98,7 @@ jobs:
     - name: Build and push Docker Image
       uses: docker/build-push-action@v6.9.0
       with:
-        context: ./Base/src/
+        context: ./NoSQL/src/Pcf.Administration
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         labels: ${{ steps.meta.outputs.labels }}
