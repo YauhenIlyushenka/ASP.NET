@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoFixture" Version="4.18.1" />
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.7" />
@@ -22,11 +23,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Pcf.GivingToCustomer.DataAccess\Pcf.GivingToCustomer.DataAccess.csproj" />
       <ProjectReference Include="..\Pcf.GivingToCustomer.WebHost\Pcf.GivingToCustomer.WebHost.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Api" />
-      <Folder Include="Components" />
     </ItemGroup>
 
 </Project>
