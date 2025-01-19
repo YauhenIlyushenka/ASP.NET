@@ -1,11 +1,8 @@
-﻿using System;
-using Pcf.ReceivingFromPartner.Core.Domain;
-
-namespace Pcf.ReceivingFromPartner.Core.Domain
+﻿namespace Pcf.ReceivingFromPartner.Core.Domain
 {
-    public class Preference
-        :BaseEntity
-    {
-        public string Name { get; set; }
-    }
+	public class Preference : IEntity<int>
+	{
+		public int Id { get; set; }
+		public string Name { get; set; }
+	}
 }
