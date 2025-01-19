@@ -27,8 +27,4 @@
       <ProjectReference Include="..\Pcf.ReceivingFromPartner.WebHost\Pcf.ReceivingFromPartner.WebHost.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="WebHost\Controllers" />
-    </ItemGroup>
-
 </Project>
