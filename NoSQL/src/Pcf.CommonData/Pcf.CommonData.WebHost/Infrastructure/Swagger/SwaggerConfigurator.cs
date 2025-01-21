@@ -6,7 +6,7 @@
 		{
 			services.AddOpenApiDocument(options =>
 			{
-				options.Title = "Dictionary Data API Doc";
+				options.Title = "Pcf CommonData API Doc";
 				options.Version = "1.0";
 			});
 		}

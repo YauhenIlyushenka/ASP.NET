@@ -18,7 +18,7 @@ namespace Pcf.ReceivingFromPartner.Integration
 
 		public async Task<List<Preference>> GetAllPreferencesAsync()
 		{
-			var response = await _httpClient.GetAsync("api/v1/preference/getpreferencesasync");
+			var response = await _httpClient.GetAsync("api/v1/preference");
 			response.EnsureSuccessStatusCode();
 
 			string responseContent = await response.Content.ReadAsStringAsync();
@@ -29,7 +29,7 @@ namespace Pcf.ReceivingFromPartner.Integration
 
 		public async Task<Preference> GetPreferenceByIdAsync(int id)
 		{
-			var response = await _httpClient.GetAsync($"api/v1/preference/getpreferencebyidasync/{id}");
+			var response = await _httpClient.GetAsync($"api/v1/preference/{id}");
 			response.EnsureSuccessStatusCode();
 
 			string responseContent = await response.Content.ReadAsStringAsync();
