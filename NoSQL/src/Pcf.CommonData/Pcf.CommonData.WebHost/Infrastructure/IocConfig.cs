@@ -23,7 +23,7 @@ namespace Pcf.CommonData.WebHost.Infrastructure
 			services.AddScoped<IMongoDbInitializer, MongoDbInitializer>();
 
 			services.AddScoped<IMongoRepository<Preference, int>, MongoRepository<Preference, int>>();
-			services.AddScoped<IMongoRepository<Preference, int>, CachingPreferenceRepository>();
+			services.Decorate<IMongoRepository<Preference, int>, CachingPreferenceRepository>();
 		}
 	}
 }
