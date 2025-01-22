@@ -26,7 +26,7 @@ namespace Pcf.CommonData.WebHost
 			services.AddFluentValidationAutoValidation();
 			services.AddValidators();
 
-			services.ConfigureRedisCache(Configuration.Get<RedisSettings>().ConnectionString);
+			services.ConfigureRedisCache(Configuration.GetSection(nameof(RedisSettings)).Get<RedisSettings>().ConnectionString);
 			services.ConfigureMongoDb(Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>());
 
 			services.AddCommonServices();

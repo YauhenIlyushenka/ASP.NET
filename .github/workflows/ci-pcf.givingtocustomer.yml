@@ -98,7 +98,7 @@ jobs:
     - name: Build and push Docker Image
       uses: docker/build-push-action@v6.9.0
       with:
-        context: ./NoSQL/src/Pcf.Administration
+        context: ./NoSQL/src/Pcf.GivingToCustomer
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         labels: ${{ steps.meta.outputs.labels }}

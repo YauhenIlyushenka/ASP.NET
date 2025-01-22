@@ -1,0 +1,116 @@
+services:
+  #Administration Api
+  pcf-administration-api:
+    container_name: pcf-administration-api
+    # build: src/Pcf.Administration/
+    image: ghcr.io/yauhenilyushenka/pcf.administration:latest
+    # restart: always
+    ports:
+      - "8080:8080"     
+    depends_on:
+      pcf-administration-db:
+        condition: service_healthy
+  #Administration Db
+  pcf-administration-db:
+    container_name: pcf-administration-db
+    image: mongo:latest
+    # restart: always
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: "mongosh --eval 'db.runCommand({ ping: 1 })' pcf-administration-db:27017/administrationDb --quiet"
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+  #GivingToCustomer Api
+  pcf-givingtocustomer-api:
+    container_name: pcf-givingtocustomer-api
+    # build: src/Pcf.GivingToCustomer/
+    image: ghcr.io/yauhenilyushenka/pcf.givingtocustomer:latest
+    # restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      pcf-givingtocustomer-db:
+        condition: service_healthy
+  #GivingToCustomer Db
+  pcf-givingtocustomer-db:
+    container_name: pcf-givingtocustomer-db
+    image: mongo:latest
+    # restart: always 
+    ports:
+      - "27018:27017"
+    healthcheck:
+      test: "mongosh --eval 'db.runCommand({ ping: 1 })' pcf-givingtocustomer-db:27017/givingtocustomerDb --quiet"
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+  #CommonData Api
+  pcf-commondata-api:
+    container_name: pcf-commondata-api
+    # build: src/Pcf.CommonData/
+    image: ghcr.io/yauhenilyushenka/pcf.commondata:latest
+    # restart: always
+    ports:
+      - "8082:8082"
+    depends_on:
+      pcf-commondata-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  #CommonData Db
+  pcf-commondata-db:
+    container_name: pcf-commondata-db
+    image: mongo:latest
+    # restart: always 
+    ports:
+      - "27019:27017"
+    healthcheck:
+      test: "mongosh --eval 'db.runCommand({ ping: 1 })' pcf-commondata-db:27017/commondataDb --quiet"
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+  #Redis
+  redis:
+    container_name: redis
+    image: redis:latest
+    # restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+  #ReceivingFromPartner Api
+  pcf-receivingfrompartner-api:
+    container_name: pcf-receivingfrompartner-api
+    # build: src/Pcf.ReceivingFromPartner/
+    image: ghcr.io/yauhenilyushenka/pcf.receivingfrompartner:latest
+    # restart: always
+    ports:
+      - "8083:8083"   
+    depends_on:
+      pcf-receivingfrompartner-db:
+        condition: service_healthy
+  #ReceivingFromPartner Db
+  pcf-receivingfrompartner-db:
+    container_name: pcf-receivingfrompartner-db
+    image: postgres:latest
+    hostname: postgres
+    # restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: receivingfrompartnerDb
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U postgres -d receivingfrompartnerDb -c 'SELECT 1' || exit 1"]
