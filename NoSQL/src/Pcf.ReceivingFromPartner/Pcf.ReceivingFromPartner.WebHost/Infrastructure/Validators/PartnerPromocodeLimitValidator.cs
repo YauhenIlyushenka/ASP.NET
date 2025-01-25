@@ -24,7 +24,7 @@ namespace Pcf.ReceivingFromPartner.WebHost.Infrastructure.Validators
 			}
 
 			var endDate = enteredEndDate.ToDateTime();
-			var currentDate = DateTime.Now;
+			var currentDate = DateTime.UtcNow;
 
 			return endDate > currentDate;
 		}

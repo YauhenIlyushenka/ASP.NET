@@ -12,7 +12,6 @@ namespace Pcf.ReceivingFromPartner.Integration.Dto
 		public Preference Preference { get; set; }
 
 		public Guid PartnerId { get; set; }
-		public Guid PromoCodeId { get; set; }
 		public Guid? PartnerManagerId { get; set; }
 	}
 }

@@ -26,7 +26,7 @@ namespace Pcf.ReceivingFromPartner.UnitTests.WebHost.Infrastructure.Validators
 			var requestDto = autoFixture
 				.Build<SetPartnerPromoCodeLimitRequest>()
 				.With(x => x.Limit, 5)
-				.With(x => x.EndDate, DateTime.Now.AddYears(5).ToDateString())
+				.With(x => x.EndDate, DateTime.UtcNow.AddYears(5).ToDateString())
 				.Create();
 
 			// Act
@@ -47,7 +47,7 @@ namespace Pcf.ReceivingFromPartner.UnitTests.WebHost.Infrastructure.Validators
 			var requestDto = autoFixture
 				.Build<SetPartnerPromoCodeLimitRequest>()
 				.With(x => x.Limit, limit)
-				.With(x => x.EndDate, DateTime.Now.AddYears(5).ToDateString())
+				.With(x => x.EndDate, DateTime.UtcNow.AddYears(5).ToDateString())
 				.Create();
 
 			// Act

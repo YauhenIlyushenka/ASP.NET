@@ -47,17 +47,17 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPost]
-		public async Task GivePromoCodesToCustomersWithPreferenceAsync(
-			[FromBody] GivePromoCodeRequest request)
+		public async Task GivePromoCodesToCustomersWithPreferenceAsync([FromBody] GivePromoCodeRequest request)
 			=> await _promocodeService.GivePromoCodesToCustomersWithPreferenceAsync(
 				new GivePromoCodeRequestDto
 				{
+					PromoCode = request.PromoCode,
 					ServiceInfo = request.ServiceInfo,
 					PartnerId = request.PartnerId,
-					PromoCode = request.PromoCode,
 					BeginDate = request.BeginDate,
 					EndDate = request.EndDate,
 					Preference = request.Preference,
+					PartnerManagerId = request.PartnerManagerId,
 				});
 	}
 }

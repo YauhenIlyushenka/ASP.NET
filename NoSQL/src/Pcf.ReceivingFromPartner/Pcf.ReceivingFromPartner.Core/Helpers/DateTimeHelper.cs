@@ -11,6 +11,6 @@ namespace Pcf.ReceivingFromPartner.Core.Helpers
 			=> date.ToString(format);
 
 		public static DateTime ToDateTime(this string date, string format = DateFormat)
-			=> DateTime.ParseExact(date, format, CultureInfo.InvariantCulture);
+			=> DateTime.ParseExact(date, format, CultureInfo.InvariantCulture).ToUniversalTime();
 	}
 }

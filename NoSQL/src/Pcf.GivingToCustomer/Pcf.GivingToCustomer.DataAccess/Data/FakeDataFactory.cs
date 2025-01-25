@@ -21,7 +21,7 @@ namespace Pcf.GivingToCustomer.DataAccess.Data
 			{
 				Id = (int)EnumPreference.Family,
 				Name = EnumPreference.Family.ToString(),
-				CustomerIds = [],
+				CustomerIds = new List<Guid>{ CustomerId },
 				PromoCodeIds = [],
 			},
 			new Preference()
@@ -49,6 +49,7 @@ namespace Pcf.GivingToCustomer.DataAccess.Data
 						{
 							(int)EnumPreference.Theater,
 							(int)EnumPreference.Children,
+							(int)EnumPreference.Family,
 						},
 						PromoCodeIds = [],
 					}

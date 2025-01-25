@@ -119,7 +119,7 @@ namespace Pcf.Administration.BLL.Services.Implementation
 		public async Task UpdateAppliedPromocodesAsync(Guid id)
 		{
 			var employee = await _employeeRepository.GetByIdAsync(id)
-				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Employee)));
+				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, $"{nameof(Employee)}/PartnerManager"));
 
 			employee.AppliedPromocodesCount++;
 

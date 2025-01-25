@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Pcf.CommonData.Core.Core.Abstractions;
 using Pcf.CommonData.Core.Domain;
-using System.Text.Json;
 
 namespace Pcf.CommonData.DataAccess.Repository
 {
@@ -33,7 +33,7 @@ namespace Pcf.CommonData.DataAccess.Repository
 			if (cachedPreferences != null)
 			{
 				_logger.LogInformation("Returning preferences from Redis cache.");
-				return JsonSerializer.Deserialize<List<Preference>>(cachedPreferences);
+				return JsonConvert.DeserializeObject<List<Preference>>(cachedPreferences);
 			}
 			
 			// Db call in order to get preferences
@@ -43,7 +43,7 @@ namespace Pcf.CommonData.DataAccess.Repository
 			// Cache the preferences in Redis cache
 			await _distributedCache.SetStringAsync(
 				key: AllPreferencesCacheKey,
-				value: JsonSerializer.Serialize(preferences),
+				value: JsonConvert.SerializeObject(preferences),
 				options: new DistributedCacheEntryOptions
 				{
 					AbsoluteExpirationRelativeToNow = _cacheExpiry,
@@ -62,7 +62,7 @@ namespace Pcf.CommonData.DataAccess.Repository
 			if (cachedPreferences != null)
 			{
 				_logger.LogInformation($"Returning preference with id:{id} from Redis cache.");
-				return JsonSerializer.Deserialize<Preference>(cachedPreferences);
+				return JsonConvert.DeserializeObject<Preference>(cachedPreferences);
 			}
 
 			var preference = await _preferenceRepository.GetByIdAsync(id);
@@ -71,7 +71,7 @@ namespace Pcf.CommonData.DataAccess.Repository
 			// Cache the preferences in Redis cache
 			await _distributedCache.SetStringAsync(
 				key: cacheKey,
-				value: JsonSerializer.Serialize(preference),
+				value: JsonConvert.SerializeObject(preference),
 				options: new DistributedCacheEntryOptions
 				{
 					AbsoluteExpirationRelativeToNow = _cacheExpiry,

@@ -56,7 +56,8 @@ namespace Pcf.GivingToCustomer.BLL.Services.Implementation
 					EndDate = request.EndDate.ToDateTime(),
 					PartnerId = request.PartnerId,
 					PreferenceId = preference.Id,
-					CustomerId = customer.Id
+					CustomerId = customer.Id,
+					PartnerManagerId = request.PartnerManagerId,
 				};
 
 				await _promocodeRepository.AddAsync(promoCode);

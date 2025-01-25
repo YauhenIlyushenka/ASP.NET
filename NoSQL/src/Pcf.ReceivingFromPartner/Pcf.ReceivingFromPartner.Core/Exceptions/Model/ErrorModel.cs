@@ -1,11 +1,16 @@
 ﻿using Newtonsoft.Json;
 
-namespace Pcf.ReceivingFromPartner.WebHost.Infrastructure.ExceptionHandling.Model
+namespace Pcf.ReceivingFromPartner.Core.Exceptions.Model
 {
 	public class ErrorModel
 	{
-		public int Status { get; set; }
+		[JsonProperty("status")]
+		public required int Status { get; set; }
+
+		[JsonProperty("title")]
 		public required string Title { get; set; }
+
+		[JsonProperty("detail")]
 		public required string Detail { get; set; }
 		public override string ToString() => JsonConvert.SerializeObject(this);
 	}

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Pcf.ReceivingFromPartner.Integration
 {
-	public class AdministrationGateway : IAdministrationGateway
+	public class AdministrationGateway : ErrorHandlingGateway, IAdministrationGateway
 	{
 		private readonly HttpClient _httpClient;
 
@@ -17,10 +17,13 @@ namespace Pcf.ReceivingFromPartner.Integration
 		public async Task NotifyAdminAboutPartnerManagerPromoCode(Guid partnerManagerId)
 		{
 			var response = await _httpClient.PostAsync(
-				$"api/v1/employee/{partnerManagerId}/appliedPromocodes", 
+				$"api/v1/employee/{partnerManagerId}/applied-promocodes", 
 				new StringContent(string.Empty));
-
-			response.EnsureSuccessStatusCode();
+			
+			if (!response.IsSuccessStatusCode)
+			{
+				await HandlingGatewayErrorResponse(response);
+			}
 		}
 	}
 }

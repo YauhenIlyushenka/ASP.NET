@@ -9,7 +9,7 @@ namespace Pcf.Administration.WebHost.Infrastructure.Swagger
 		{
 			services.AddOpenApiDocument(options =>
 			{
-				options.Title = "PromoCode Factory Administration API Doc";
+				options.Title = "Pcf Administration API Doc";
 				options.Version = "1.0";
 			});
 		}

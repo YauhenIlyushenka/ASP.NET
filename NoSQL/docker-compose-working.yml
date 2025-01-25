@@ -2,8 +2,8 @@ services:
   #Administration Api
   pcf-administration-api:
     container_name: pcf-administration-api
-    # build: src/Pcf.Administration/
-    image: ghcr.io/yauhenilyushenka/pcf.administration:latest
+    build: src/Pcf.Administration/
+    # image: ghcr.io/yauhenilyushenka/pcf.administration:latest
     # restart: always
     ports:
       - "8080:8080"     
@@ -27,8 +27,8 @@ services:
   #GivingToCustomer Api
   pcf-givingtocustomer-api:
     container_name: pcf-givingtocustomer-api
-    # build: src/Pcf.GivingToCustomer/
-    image: ghcr.io/yauhenilyushenka/pcf.givingtocustomer:latest
+    build: src/Pcf.GivingToCustomer/
+    # image: ghcr.io/yauhenilyushenka/pcf.givingtocustomer:latest
     # restart: always
     ports:
       - "8081:8081"
@@ -52,8 +52,8 @@ services:
   #CommonData Api
   pcf-commondata-api:
     container_name: pcf-commondata-api
-    # build: src/Pcf.CommonData/
-    image: ghcr.io/yauhenilyushenka/pcf.commondata:latest
+    build: src/Pcf.CommonData/
+    # image: ghcr.io/yauhenilyushenka/pcf.commondata:latest
     # restart: always
     ports:
       - "8082:8082"
@@ -92,8 +92,8 @@ services:
   #ReceivingFromPartner Api
   pcf-receivingfrompartner-api:
     container_name: pcf-receivingfrompartner-api
-    # build: src/Pcf.ReceivingFromPartner/
-    image: ghcr.io/yauhenilyushenka/pcf.receivingfrompartner:latest
+    build: src/Pcf.ReceivingFromPartner/
+    # image: ghcr.io/yauhenilyushenka/pcf.receivingfrompartner:latest
     # restart: always
     ports:
       - "8083:8083"   
@@ -114,3 +114,7 @@ services:
       POSTGRES_DB: receivingfrompartnerDb
     healthcheck:
       test: ["CMD-SHELL", "psql -U postgres -d receivingfrompartnerDb -c 'SELECT 1' || exit 1"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s

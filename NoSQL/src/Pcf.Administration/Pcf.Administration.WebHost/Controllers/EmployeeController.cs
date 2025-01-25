@@ -123,7 +123,7 @@ namespace Pcf.Administration.WebHost.Controllers
 		/// </summary>
 		/// <param name="id">Employee Id</param>
 		/// <returns></returns>
-		[HttpPost("{id:guid}/appliedPromocodes")]
+		[HttpPost("{id:guid}/applied-promocodes")]
 		public async Task UpdateAppliedPromocodesAsync(Guid id)
 			=> await _employeeService.UpdateAppliedPromocodesAsync(id);
 	}

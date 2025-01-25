@@ -12,5 +12,6 @@ namespace Pcf.GivingToCustomer.Core.Domain
 		public Guid PartnerId { get; set; }
 		public int PreferenceId { get; set; }
 		public Guid CustomerId { get; set; }
+		public Guid? PartnerManagerId { get; set; }
 	}
 }

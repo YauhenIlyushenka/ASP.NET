@@ -38,9 +38,9 @@ namespace Pcf.GivingToCustomer.WebHost.Infrastructure.Validators
 
 			var beginDate = enteredBeginDate.ToDateTime();
 			var endDate = enteredEndDate.ToDateTime();
-			var currentDate = DateTime.Now;
+			var currentDate = DateTime.UtcNow.Date;
 
-			return beginDate > currentDate && endDate > currentDate && endDate > beginDate;
+			return beginDate >= currentDate && endDate > currentDate && endDate > beginDate;
 		}
 
 		private bool IsValidFormatDates(List<string> dates)

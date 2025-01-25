@@ -9,7 +9,7 @@ namespace Pcf.GivingToCustomer.WebHost.Infrastructure.Swagger
 		{
 			services.AddOpenApiDocument(options =>
 			{
-				options.Title = "Pcf Giving To Customer API Doc";
+				options.Title = "Pcf GivingToCustomer API Doc";
 				options.Version = "1.0";
 			});
 		}

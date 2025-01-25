@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Pcf.ReceivingFromPartner.Core.Exceptions;
-using Pcf.ReceivingFromPartner.WebHost.Infrastructure.ExceptionHandling.Model;
+using Pcf.ReceivingFromPartner.Core.Exceptions.Model;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -40,6 +40,9 @@ namespace Pcf.ReceivingFromPartner.WebHost.Infrastructure.ExceptionHandling
 			{
 				ArgumentException or BadRequestException => (int)HttpStatusCode.BadRequest,
 				NotFoundException => (int)HttpStatusCode.NotFound,
+				BadGatewayException => (int)HttpStatusCode.BadGateway,
+				GatewayTimeoutException => (int)HttpStatusCode.GatewayTimeout,
+				ServiceUnavailableException => (int)HttpStatusCode.ServiceUnavailable,
 				_ => (int)HttpStatusCode.InternalServerError,
 			};
 

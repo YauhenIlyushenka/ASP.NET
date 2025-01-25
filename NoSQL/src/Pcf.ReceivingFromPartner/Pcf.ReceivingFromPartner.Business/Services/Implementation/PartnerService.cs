@@ -54,7 +54,7 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 
 		public async Task<PartnerDto> GetByIdAsync(Guid id)
 		{
-			var partner = await _partnerRepository.GetByIdAsync(x => x.Id.Equals(id))
+			var partner = await _partnerRepository.GetByIdAsync(x => x.Id.Equals(id), includes: nameof(Partner.PartnerLimits), asNoTracking: true)
 				?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Partner)));
 
 			return new PartnerDto
@@ -102,12 +102,12 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 			if (!partner.IsActive)
 				throw new BadRequestException($"The {nameof(Partner)} with id: {partner.Id} is not active.");
 
-			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.Now);
+			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.UtcNow);
 
 			if (activeLimit != null)
 			{
 				partner.NumberIssuedPromoCodes = DefaultCountIssuedPromoCodes;
-				activeLimit.CancelDate = DateTime.Now;
+				activeLimit.CancelDate = DateTime.UtcNow;
 			}
 
 			var newLimit = new PartnerPromoCodeLimit
@@ -115,7 +115,7 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 				Limit = request.Limit,
 				PartnerId = partner.Id,
 				Partner = partner,
-				CreateDate = DateTime.Now,
+				CreateDate = DateTime.UtcNow,
 				EndDate = request.EndDate.ToDateTime(),
 			};
 
@@ -160,10 +160,10 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 			if (!partner.IsActive)
 				throw new BadRequestException($"The {nameof(Partner)} with id: {partner.Id} is not active.");
 
-			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.Now)
+			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.UtcNow)
 				?? throw new BadRequestException($"No active {nameof(Partner.PartnerLimits)} found for {nameof(Partner)} with id: {partner.Id}.");
 
-			activeLimit.CancelDate = DateTime.Now;
+			activeLimit.CancelDate = DateTime.UtcNow;
 			_partnerRepository.Update(partner);
 			await _partnerRepository.SaveChangesAsync();
 
@@ -222,7 +222,7 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 				includes: $"{nameof(Partner.PartnerLimits)},{nameof(Partner.PromoCodes)}")
 					?? throw new NotFoundException(FormatFullNotFoundErrorMessage(id, nameof(Partner)));
 
-			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.Now)
+			var activeLimit = partner.PartnerLimits.FirstOrDefault(x => !x.CancelDate.HasValue && x.EndDate > DateTime.UtcNow)
 				?? throw new BadRequestException($"There is no limit available for providing promocodes.");
 
 			if (partner.NumberIssuedPromoCodes + 1 > activeLimit.Limit)
@@ -240,8 +240,8 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 				Partner = partner,
 				Code = request.PromoCode,
 				ServiceInfo = request.ServiceInfo,
-				BeginDate = DateTime.Now,
-				EndDate = DateTime.Now.AddDays(30),
+				BeginDate = DateTime.UtcNow,
+				EndDate = DateTime.UtcNow.AddDays(30),
 				PreferenceId = preference.Id,
 				PreferenceName = preference.Name,
 				PartnerManagerId = request.PartnerManagerId,
@@ -253,11 +253,11 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 			_partnerRepository.Update(partner);
 			await _partnerRepository.SaveChangesAsync();
 
-			//TODO: Чтобы информация о том, что промокод был выдан парнером была отправлена
+			//TODO: Чтобы информация о том, что промокод был выдан партнером была отправлена
 			//в микросервис рассылки клиентам нужно либо вызвать его API, либо отправить событие в очередь
 			await _givingPromoCodeToCustomerGateway.GivePromoCodeToCustomer(promoCode);
 
-			//TODO: Чтобы информация о том, что промокод был выдан парнером была отправлена
+			//TODO: Чтобы информация о том, что промокод был выдан партнером была отправлена
 			//в микросервис администрирования нужно либо вызвать его API, либо отправить событие в очередь
 			if (request.PartnerManagerId.HasValue)
 			{
