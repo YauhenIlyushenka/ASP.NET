@@ -5,6 +5,8 @@ services:
     build: src/Pcf.Administration/
     # image: ghcr.io/yauhenilyushenka/pcf.administration:latest
     # restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
     ports:
       - "8080:8080"     
     depends_on:
@@ -30,6 +32,8 @@ services:
     build: src/Pcf.GivingToCustomer/
     # image: ghcr.io/yauhenilyushenka/pcf.givingtocustomer:latest
     # restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
     ports:
       - "8081:8081"
     depends_on:
@@ -55,6 +59,8 @@ services:
     build: src/Pcf.CommonData/
     # image: ghcr.io/yauhenilyushenka/pcf.commondata:latest
     # restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
     ports:
       - "8082:8082"
     depends_on:
@@ -95,6 +101,8 @@ services:
     build: src/Pcf.ReceivingFromPartner/
     # image: ghcr.io/yauhenilyushenka/pcf.receivingfrompartner:latest
     # restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
     ports:
       - "8083:8083"   
     depends_on:
