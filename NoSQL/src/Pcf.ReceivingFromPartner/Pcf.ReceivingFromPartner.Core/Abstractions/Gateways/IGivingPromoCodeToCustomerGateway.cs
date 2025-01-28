@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using Pcf.ReceivingFromPartner.Core.Domain;
+﻿using Pcf.ReceivingFromPartner.Core.Domain;
+using System.Threading.Tasks;
 
 namespace Pcf.ReceivingFromPartner.Core.Abstractions.Gateways
 {
-    public interface IGivingPromoCodeToCustomerGateway
-    {
-        Task GivePromoCodeToCustomer(PromoCode promoCode);
-    }
+	public interface IGivingPromoCodeToCustomerGateway
+	{
+		Task GivePromoCodeToCustomer(PromoCode promoCode);
+	}
 }

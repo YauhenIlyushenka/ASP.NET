@@ -1,0 +1,106 @@
+name: CI for Pcf.GivingToCustomer
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - 'NoSQL/src/Pcf.GivingToCustomer/**'   
+
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - 'NoSQL/src/Pcf.GivingToCustomer/**'  
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    env:
+      ROOT_PROJECT_PATH: NoSQL/src/Pcf.GivingToCustomer
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore Dependecnies
+      run: dotnet restore ${{ env.ROOT_PROJECT_PATH }}/Pcf.GivingToCustomer.sln
+      
+    - name: Build project
+      run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/Pcf.GivingToCustomer.sln
+
+  test:
+    name: Testing
+    needs: build
+    runs-on: ubuntu-latest
+    
+    env:
+      ROOT_TEST_PROJECT_PATH: NoSQL/src/Pcf.GivingToCustomer/Pcf.GivingToCustomer.IntegrationTests
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore Dependecnies
+      run: dotnet restore NoSQL/src/Pcf.GivingToCustomer/Pcf.GivingToCustomer.sln
+
+    - name: Test
+      run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/Pcf.GivingToCustomer.IntegrationTests.csproj
+
+  docker:
+    name: Build and Push Docker Image
+    needs: test
+    runs-on: ubuntu-latest
+    
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: yauhenilyushenka/pcf.givingtocustomer
+      IMAGE_TAG: latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Login against a Docker registy
+    # https://github.com/docker/login-action
+    - name: Log in to GitHub Container Registry ${{ env.REGISTRY }}
+      uses: docker/login-action@v3.3.0
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GH_PAT }}
+
+    # Extract metadata (tags, labels) for Docker
+    # https://github.com/docker/metadata-action
+    - name: Extract Docker metadata
+      id: meta
+      uses: docker/metadata-action@v5.5.1
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+    # Build and push Docker Image with Buildx
+    # https://github.com/docker/build-push-action
+    - name: Build and push Docker Image
+      uses: docker/build-push-action@v6.9.0
+      with:
+        context: ./NoSQL/src/Pcf.GivingToCustomer
+        push: true
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        labels: ${{ steps.meta.outputs.labels }}
+        
+        
