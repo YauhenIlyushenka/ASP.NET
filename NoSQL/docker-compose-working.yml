@@ -2,8 +2,8 @@ services:
   #Administration Api
   pcf-administration-api:
     container_name: pcf-administration-api
-    build: src/Pcf.Administration/
-    # image: ghcr.io/yauhenilyushenka/pcf.administration:latest
+    # build: src/Pcf.Administration/
+    image: ghcr.io/yauhenilyushenka/pcf.administration:latest
     # restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Staging
@@ -29,8 +29,8 @@ services:
   #GivingToCustomer Api
   pcf-givingtocustomer-api:
     container_name: pcf-givingtocustomer-api
-    build: src/Pcf.GivingToCustomer/
-    # image: ghcr.io/yauhenilyushenka/pcf.givingtocustomer:latest
+    # build: src/Pcf.GivingToCustomer/
+    image: ghcr.io/yauhenilyushenka/pcf.givingtocustomer:latest
     # restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Staging
@@ -56,8 +56,8 @@ services:
   #CommonData Api
   pcf-commondata-api:
     container_name: pcf-commondata-api
-    build: src/Pcf.CommonData/
-    # image: ghcr.io/yauhenilyushenka/pcf.commondata:latest
+    # build: src/Pcf.CommonData/
+    image: ghcr.io/yauhenilyushenka/pcf.commondata:latest
     # restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Staging
@@ -98,8 +98,8 @@ services:
   #ReceivingFromPartner Api
   pcf-receivingfrompartner-api:
     container_name: pcf-receivingfrompartner-api
-    build: src/Pcf.ReceivingFromPartner/
-    # image: ghcr.io/yauhenilyushenka/pcf.receivingfrompartner:latest
+    # build: src/Pcf.ReceivingFromPartner/
+    image: ghcr.io/yauhenilyushenka/pcf.receivingfrompartner:latest
     # restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Staging
