@@ -29,9 +29,18 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    
+    - name: Configure custom GitHub Nuget Package
+      run: dotnet nuget add source --name github "https://nuget.pkg.github.com/YauhenIlyushenka/index.json"
 
     - name: Restore Dependecnies
       run: dotnet restore ${{ env.ROOT_PROJECT_PATH }}/Pcf.ReceivingFromPartner.sln
+      env:
+        NUGET_USERNAME: ${{ github.actor }}
+        NUGET_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Remove NuGet.config
+      run: rm -f ~/.nuget/NuGet.Config
       
     - name: Build project
       run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/Pcf.ReceivingFromPartner.sln
@@ -53,8 +62,17 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: Configure custom GitHub Nuget Package
+      run: dotnet nuget add source --name github "https://nuget.pkg.github.com/YauhenIlyushenka/index.json"
+
     - name: Restore Dependecnies
       run: dotnet restore NoSQL/src/Pcf.ReceivingFromPartner/Pcf.ReceivingFromPartner.sln
+      env:
+        NUGET_USERNAME: ${{ github.actor }}
+        NUGET_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Remove NuGet.config
+      run: rm -f ~/.nuget/NuGet.Config
 
     - name: Test
       run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/Pcf.ReceivingFromPartner.UnitTests.csproj
