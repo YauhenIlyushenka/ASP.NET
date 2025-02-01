@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Pcf.GivingToCustomer.Core.Abstractions.Gateways;
+using System;
 using System.Threading.Tasks;
-using Pcf.GivingToCustomer.Core.Abstractions.Gateways;
 
 namespace Pcf.GivingToCustomer.Integration
 {

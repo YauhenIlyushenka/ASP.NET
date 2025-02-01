@@ -5,7 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Pcf.GivingToCustomer.Core\Pcf.GivingToCustomer.Core.csproj" />
+      <PackageReference Include="MassTransit" Version="8.3.4" />
+      <PackageReference Include="Pcf.MassTransitContracts" Version="1.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Pcf.GivingToCustomer.BLL\Pcf.GivingToCustomer.BLL.csproj" />
     </ItemGroup>
 
 </Project>

@@ -53,6 +53,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pcf.CommonData.Business", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pcf.ReceivingFromPartner.Business", "Pcf.ReceivingFromPartner\Pcf.ReceivingFromPartner.Business\Pcf.ReceivingFromPartner.Business.csproj", "{4C8FB995-E160-442B-8368-EC3D2C1209D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pcf.Administration.Integration", "Pcf.Administration\Pcf.Administration.Integration\Pcf.Administration.Integration.csproj", "{22609888-4598-42C0-9EFC-34260D1FCF21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,10 @@ Global
 		{4C8FB995-E160-442B-8368-EC3D2C1209D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C8FB995-E160-442B-8368-EC3D2C1209D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C8FB995-E160-442B-8368-EC3D2C1209D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22609888-4598-42C0-9EFC-34260D1FCF21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22609888-4598-42C0-9EFC-34260D1FCF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22609888-4598-42C0-9EFC-34260D1FCF21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22609888-4598-42C0-9EFC-34260D1FCF21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +175,7 @@ Global
 		{198E1268-A8F0-4536-AD98-043E0C2BCCC8} = {B5B22993-24E4-4BC4-B5EB-80BEF2F5401D}
 		{383A51A3-D829-4F5B-A2D9-A2FB92FF352F} = {B5B22993-24E4-4BC4-B5EB-80BEF2F5401D}
 		{4C8FB995-E160-442B-8368-EC3D2C1209D5} = {45AAAE31-1D5D-400B-ADAA-DE16D7B95BD5}
+		{22609888-4598-42C0-9EFC-34260D1FCF21} = {92A39EB2-4342-42A8-A30F-36DB3B5D2C95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4AABC854-CF7F-4208-A015-21F0DDFE876B}
