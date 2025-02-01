@@ -30,11 +30,17 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Authenticate to GitHub Packages and Restore Dependencies
-      run: |
-        dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GH_PAT }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/YauhenIlyushenka/index.json"
-        dotnet restore ${{ env.ROOT_PROJECT_PATH }}/Pcf.Administration.sln
-        rm -f ~/.nuget/NuGet.Config
+    - name: Configure custom GitHub Nuget Package
+      run: dotnet nuget add source --name github "https://nuget.pkg.github.com/YauhenIlyushenka/index.json"
+
+    - name: Restore Dependecnies
+      run: dotnet restore ${{ env.ROOT_PROJECT_PATH }}/Pcf.Administration.sln
+      env:
+        NUGET_USERNAME: ${{ github.actor }}
+        NUGET_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Remove NuGet.config
+      run: rm -f ~/.nuget/NuGet.Config
       
     - name: Build project
       run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/Pcf.Administration.sln
