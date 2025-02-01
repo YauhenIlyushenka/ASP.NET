@@ -3,7 +3,12 @@ WORKDIR /app
 EXPOSE 8083
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+# Setup working directory
+WORKDIR /src 
+
+# Added arguments for NuGet
+ARG NUGET_USERNAME
+ARG NUGET_PASSWORD
 
 COPY ["Pcf.ReceivingFromPartner.WebHost/Pcf.ReceivingFromPartner.WebHost.csproj", "Pcf.ReceivingFromPartner.WebHost/"]
 COPY ["Pcf.ReceivingFromPartner.Business/Pcf.ReceivingFromPartner.Business.csproj", "Pcf.ReceivingFromPartner.Business/"]
@@ -12,8 +17,17 @@ COPY ["Pcf.ReceivingFromPartner.Integration/Pcf.ReceivingFromPartner.Integration
 COPY ["Pcf.ReceivingFromPartner.UnitTests/Pcf.ReceivingFromPartner.UnitTests.csproj", "Pcf.ReceivingFromPartner.UnitTests/"]
 COPY ["Pcf.ReceivingFromPartner.Core/Pcf.ReceivingFromPartner.Core.csproj", "Pcf.ReceivingFromPartner.Core/"]
 
+# Copy NuGet.config in working directory
+COPY NuGet.config .
+
+RUN sed -i "s/%NUGET_USERNAME%/${NUGET_USERNAME}/g" NuGet.config \
+    && sed -i "s/%NUGET_PASSWORD%/${NUGET_PASSWORD}/g" NuGet.config
+
 ## Restore dependecies
 RUN dotnet restore "Pcf.ReceivingFromPartner.WebHost/Pcf.ReceivingFromPartner.WebHost.csproj"
+
+# Remove NuGet.config from working directory
+RUN rm NuGet.config
 
 ## Copy full solution over
 COPY . .

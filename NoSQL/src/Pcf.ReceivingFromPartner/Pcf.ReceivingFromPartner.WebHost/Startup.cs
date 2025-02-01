@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Pcf.ReceivingFromPartner.DataAccess;
 using Pcf.ReceivingFromPartner.WebHost.Infrastructure;
 using Pcf.ReceivingFromPartner.WebHost.Infrastructure.ExceptionHandling;
+using Pcf.ReceivingFromPartner.WebHost.Infrastructure.RabbitMQ;
 using Pcf.ReceivingFromPartner.WebHost.Infrastructure.Settings;
 using Pcf.ReceivingFromPartner.WebHost.Infrastructure.Swagger;
 using Pcf.ReceivingFromPartner.WebHost.Infrastructure.Validators;
@@ -34,6 +35,7 @@ namespace Pcf.ReceivingFromPartner.WebHost
 			services.AddValidators();
 
 			services.ConfigureDbContext(Configuration.Get<ApplicationSettings>().ConnectionString);
+			services.ConfigureMassTransit(Configuration.GetSection(nameof(IntegrationSettings)).Get<IntegrationSettings>().RabbitMQ);
 			services.AddReceivingFromPartnerServices(Configuration);
 
 			services.AddSwaggerServices();

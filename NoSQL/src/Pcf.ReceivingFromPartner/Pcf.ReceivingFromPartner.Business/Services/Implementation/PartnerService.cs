@@ -16,21 +16,25 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 		private readonly IPreferenceService _preferenceService;
 
 		private readonly INotificationGateway _notificationGateway;
-		private readonly IGivingPromoCodeToCustomerGateway _givingPromoCodeToCustomerGateway;
-		private readonly IAdministrationGateway _administrationGateway;
+		private readonly IRabbitMQGateway _rabbitMQGateway;
+		//private readonly IGivingPromoCodeToCustomerGateway _givingPromoCodeToCustomerGateway;
+		//private readonly IAdministrationGateway _administrationGateway;
 
 		public PartnerService(
 			IRepository<Partner, Guid> partnerRepository,
 			IPreferenceService preferenceService,
 			INotificationGateway notificationGateway,
-			IGivingPromoCodeToCustomerGateway givingPromoCodeToCustomerGateway,
-			IAdministrationGateway administrationGateway)
+			IRabbitMQGateway rabbitMQGateway
+			//IGivingPromoCodeToCustomerGateway givingPromoCodeToCustomerGateway,
+			//IAdministrationGateway administrationGateway
+			)
 		{
 			_partnerRepository = partnerRepository;
 			_preferenceService = preferenceService;
 			_notificationGateway = notificationGateway;
-			_givingPromoCodeToCustomerGateway = givingPromoCodeToCustomerGateway;
-			_administrationGateway = administrationGateway;
+			_rabbitMQGateway = rabbitMQGateway;
+			//_givingPromoCodeToCustomerGateway = givingPromoCodeToCustomerGateway;
+			//_administrationGateway = administrationGateway;
 		}
 
 		public async Task<List<PartnerDto>> GetAllAsync()
@@ -255,14 +259,16 @@ namespace Pcf.ReceivingFromPartner.Business.Services.Implementation
 
 			//TODO: Чтобы информация о том, что промокод был выдан партнером была отправлена
 			//в микросервис рассылки клиентам нужно либо вызвать его API, либо отправить событие в очередь
-			await _givingPromoCodeToCustomerGateway.GivePromoCodeToCustomer(promoCode);
+			//await _givingPromoCodeToCustomerGateway.GivePromoCodeToCustomer(promoCode);
 
 			//TODO: Чтобы информация о том, что промокод был выдан партнером была отправлена
 			//в микросервис администрирования нужно либо вызвать его API, либо отправить событие в очередь
-			if (request.PartnerManagerId.HasValue)
-			{
-				await _administrationGateway.NotifyAdminAboutPartnerManagerPromoCode(request.PartnerManagerId.Value);
-			}
+			//if (request.PartnerManagerId.HasValue)
+			//{
+			//	await _administrationGateway.NotifyAdminAboutPartnerManagerPromoCode(request.PartnerManagerId.Value);
+			//}
+
+			await _rabbitMQGateway.SendNotificationAboutGivingPromocode(promoCode);
 		}
 	}
 }

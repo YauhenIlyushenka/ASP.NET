@@ -12,6 +12,8 @@ services:
     depends_on:
       pcf-administration-db:
         condition: service_healthy
+      pcf-rabbitmq:
+        condition: service_healthy
   #Administration Db
   pcf-administration-db:
     container_name: pcf-administration-db
@@ -38,6 +40,8 @@ services:
       - "8081:8081"
     depends_on:
       pcf-givingtocustomer-db:
+        condition: service_healthy
+      pcf-rabbitmq:
         condition: service_healthy
   #GivingToCustomer Db
   pcf-givingtocustomer-db:
@@ -108,6 +112,8 @@ services:
     depends_on:
       pcf-receivingfrompartner-db:
         condition: service_healthy
+      pcf-rabbitmq:
+        condition: service_healthy
   #ReceivingFromPartner Db
   pcf-receivingfrompartner-db:
     container_name: pcf-receivingfrompartner-db
@@ -125,4 +131,18 @@ services:
       interval: 30s
       retries: 3
       start_period: 30s
+      timeout: 10s
+  
+  #RabbitMQ
+  pcf-rabbitmq:
+    container_name: pcf-rabbitmq
+    image: rabbitmq:3.6-management-alpine
+    ports:
+      - 5672:5672 # Default RabbitMQ Port (AMQP)
+      - 15672:15672 # Management UI (Web Interface)
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
       timeout: 10s

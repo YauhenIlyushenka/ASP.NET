@@ -8,6 +8,8 @@ using Pcf.Administration.Core.Settings;
 using Pcf.Administration.DataAccess;
 using Pcf.Administration.WebHost.Infrastructure;
 using Pcf.Administration.WebHost.Infrastructure.ExceptionHandling;
+using Pcf.Administration.WebHost.Infrastructure.RabbitMQ;
+using Pcf.Administration.WebHost.Infrastructure.RabbitMQ.Model;
 using Pcf.Administration.WebHost.Infrastructure.Swagger;
 using Pcf.Administration.WebHost.Infrastructure.Validators;
 using System.Text.Json.Serialization;
@@ -34,6 +36,7 @@ namespace Pcf.Administration.WebHost
 			services.AddValidators();
 
 			services.ConfigureMongoDb(Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>());
+			services.ConfigureMassTransit(Configuration.GetSection(nameof(RabbitMQSettings)).Get<RabbitMQSettings>());
 			services.AddAdministrationServices();
 			services.AddSwaggerServices();
 		}

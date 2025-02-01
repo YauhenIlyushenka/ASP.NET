@@ -9,11 +9,15 @@
     <ItemGroup>
       <ProjectReference Include="..\Pcf.Administration.BLL\Pcf.Administration.BLL.csproj" />
       <ProjectReference Include="..\Pcf.Administration.Core\Pcf.Administration.Core.csproj" />
+      <ProjectReference Include="..\Pcf.Administration.Integration\Pcf.Administration.Integration.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="11.11.0" />
       <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+      <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+      <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
       <PackageReference Include="NSwag.AspNetCore" Version="14.2.0" />
     </ItemGroup>
