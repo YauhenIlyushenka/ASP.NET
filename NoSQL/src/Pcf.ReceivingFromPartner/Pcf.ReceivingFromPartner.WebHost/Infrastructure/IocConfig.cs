@@ -7,6 +7,8 @@ using Pcf.ReceivingFromPartner.Core.Abstractions.Repositories;
 using Pcf.ReceivingFromPartner.Core.Domain;
 using Pcf.ReceivingFromPartner.DataAccess.Repository;
 using Pcf.ReceivingFromPartner.Integration;
+using Pcf.ReceivingFromPartner.Integration.RabbitMQ;
+using Pcf.ReceivingFromPartner.WebHost.Infrastructure.Settings;
 using System;
 
 namespace Pcf.ReceivingFromPartner.WebHost.Infrastructure
@@ -31,21 +33,26 @@ namespace Pcf.ReceivingFromPartner.WebHost.Infrastructure
 
 		private static void AddGateways(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddScoped<INotificationGateway, NotificationGateway>();
-			services.AddHttpClient<IGivingPromoCodeToCustomerGateway, GivingPromoCodeToCustomerGateway>(httpClient =>
-			{
-				httpClient.BaseAddress = new Uri(configuration["IntegrationSettings:GivingToCustomerApiUrl"]);
-			});
-
-			services.AddHttpClient<IAdministrationGateway, AdministrationGateway>(httpClient =>
-			{
-				httpClient.BaseAddress = new Uri(configuration["IntegrationSettings:AdministrationApiUrl"]);
-			});
-
+			// For synchronous flow to another API's via httpClient;
 			services.AddHttpClient<ICommonDataGateway, CommonDataGateway>(httpClient =>
 			{
-				httpClient.BaseAddress = new Uri(configuration["IntegrationSettings:CommonDataApiUrl"]);
+				httpClient.BaseAddress = new Uri(configuration
+					.GetSection(nameof(IntegrationSettings)).Get<IntegrationSettings>().CommonDataApiUrl);
 			});
+
+			//services.AddHttpClient<IGivingPromoCodeToCustomerGateway, GivingPromoCodeToCustomerGateway>(httpClient =>
+			//{
+			//	httpClient.BaseAddress = new Uri(configuration["IntegrationSettings:GivingToCustomerApiUrl"]);
+			//});
+
+			//services.AddHttpClient<IAdministrationGateway, AdministrationGateway>(httpClient =>
+			//{
+			//	httpClient.BaseAddress = new Uri(configuration["IntegrationSettings:AdministrationApiUrl"]);
+			//});
+
+			// For asynchronous flow via MassTransit/RabbitMQ
+			services.AddScoped<INotificationGateway, NotificationGateway>();
+			services.AddScoped<IRabbitMQGateway, RabbitMQGateway>();
 		}
 	}
 }

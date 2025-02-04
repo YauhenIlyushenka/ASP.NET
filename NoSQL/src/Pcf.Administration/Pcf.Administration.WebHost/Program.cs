@@ -13,4 +13,5 @@ namespace Pcf.Administration.WebHost
 			Host.CreateDefaultBuilder(args)
 				.ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 	}
+
 }

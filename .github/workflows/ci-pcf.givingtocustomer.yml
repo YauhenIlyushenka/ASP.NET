@@ -30,8 +30,17 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: Configure custom GitHub Nuget Package
+      run: dotnet nuget add source --name github "https://nuget.pkg.github.com/YauhenIlyushenka/index.json"
+
     - name: Restore Dependecnies
       run: dotnet restore ${{ env.ROOT_PROJECT_PATH }}/Pcf.GivingToCustomer.sln
+      env:
+        NUGET_USERNAME: ${{ github.actor }}
+        NUGET_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Remove NuGet.config
+      run: rm -f ~/.nuget/NuGet.Config
       
     - name: Build project
       run: dotnet build ${{ env.ROOT_PROJECT_PATH }}/Pcf.GivingToCustomer.sln
@@ -52,9 +61,18 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    
+    - name: Configure custom GitHub Nuget Package
+      run: dotnet nuget add source --name github "https://nuget.pkg.github.com/YauhenIlyushenka/index.json"
 
     - name: Restore Dependecnies
       run: dotnet restore NoSQL/src/Pcf.GivingToCustomer/Pcf.GivingToCustomer.sln
+      env:
+        NUGET_USERNAME: ${{ github.actor }}
+        NUGET_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Remove NuGet.config
+      run: rm -f ~/.nuget/NuGet.Config
 
     - name: Test
       run: dotnet test ${{ env.ROOT_TEST_PROJECT_PATH }}/Pcf.GivingToCustomer.IntegrationTests.csproj
@@ -101,6 +119,9 @@ jobs:
         context: ./NoSQL/src/Pcf.GivingToCustomer
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        build-args: |
+            NUGET_USERNAME=${{ github.actor }}
+            NUGET_PASSWORD=${{ secrets.GH_PAT }}
         labels: ${{ steps.meta.outputs.labels }}
         
         
