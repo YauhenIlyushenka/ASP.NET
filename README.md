@@ -1,45 +1,44 @@
-# Otus.PromoCodeFactory
+# PromoCodeFactory
 
-Проект для домашнего задания по курсу `C# ASP.NET Core Разработчик` от `Отус`.
-Cистема `Promocode Factory` для выдачи промокодов партнеров для клиентов по группам предпочтений.
+The `Promo Code Factory` system for issuing partner promo codes to customers grouped by their preferences.
 
-# Описание
-Система содержит базу клиентов с их предпочтениями (Семья, Дети, Театр, Бизнес, и т.д.) и позволяет партнёрам отсылать промокоды клиентам с выбранными предпочтениями.
-Например, промокоды на билеты в театр будут разосланы клиентам с предпочтением "Театр".
+# Description
+The system maintains a customer database with their preferences (Family, Children, Theatre, Business, etc.) and allows partners to send promo codes to customers with selected preferences.
+For example, promo codes for theatre tickets will be sent to customers with the "Theatre" preference.
 
-При этом партнёр сам выбирает клиентам с какими предпочтениями рассылать выбранные промокоды и сделать он это может двумя способами: через партнерского менеджера или с помощью API.
-Для отправки промокода клиентам менеджер может зайти в SPA интерфейс приложения и сделать выдачу промокода, полученного каким-то способом от партнера, например, по email. Промокод будет отправлен всем клиентам с подходящим предпочтением.
+Partners themselves decide which customer preferences should receive a given promo code, and they can do this in two ways: through a partner manager or via the API.
+To send a promo code to customers, a manager can log in to the application's SPA interface and issue a promo code that was received from the partner in some way, for example by email. The promo code will be sent to all customers with a matching preference.
 
-Если партнер имеет возможности программной интеграции, то он может выдать промокоды по предпочтениям через api.
-Для этого он запрашивает от API список предпочтений и передает нужное предпочтение вместе с промокодом.
-Разрабатываемый функционал не будет включать сам механизм рассылки.
+If a partner has the capability for software integration, they can issue promo codes by preference through the API.
+To do this, they request the list of preferences from the API and pass the desired preference together with the promo code.
+The functionality being developed does not include the distribution mechanism itself.
 
-Система имеет два варианта архитектуры, для MVP мы рассматриваем небольшое монолитное приложение PromoCodeFactory c API. Также есть микросервисный вариант реализации, где система разбивается на три микросервиса: Администрирование: Pcf.Administration, Получение промокодов от партнеров:Pcf.ReceivingFromPartner, Предложение промокодов клиентам: Pcf.GivingToCustomer.
+The system has two architecture options. For the MVP we consider a small monolithic PromoCodeFactory application with an API. There is also a microservices implementation, where the system is split into three microservices: Administration: Pcf.Administration, Receiving promo codes from partners: Pcf.ReceivingFromPartner, Offering promo codes to customers: Pcf.GivingToCustomer.
 
-Микросервис администрирования отвечает за работу с сотрудниками (партнерскими менеджерами) и ролями. Микросервис Получение промокодов от партнеров отвечает за предоставление партнеру api для передачи промокода и также API для управления партнерами.
-Микросервис Предложение промокодов клиентам отвечает за предоставление промокодов конкретным клиентам и потенциально за их рассылку.
+The Administration microservice is responsible for working with employees (partner managers) and roles. The Receiving promo codes from partners microservice is responsible for providing partners with an API to submit promo codes, as well as an API for managing partners.
+The Offering promo codes to customers microservice is responsible for providing promo codes to specific customers and potentially for distributing them.
 
-# Основные функции
-- Партнерский менеджер нашей компании может зайти в WEB-приложение сервиса PromoCodeFactory, выбрать предпочтение из списка и выдать промокод, полученный от партнера, после этого промокод будет выдан всем клиентам из клиентской базы, которые имеют данное предпочтение.
-- Администратор сервиса может:
-  - войти в приложение,
-  - просмотреть список сотрудников,
-  - создать нового сотрудника или отредактировать данные существующего;
-  - посмотреть количество выданных промокодов сотрудником в информации о сотруднике;
-  - выдавать промокоды, как и менеджер;
-  - отменить лимит партнера или установить новый.
-- Администратор и сотрудник должны авторизоваться.
-- Партнер может через API создать новый промокод на предпочтение.
-- Для того, чтобы партнер через API мог выдать промокоды по предпочтениям, мы предоставляем доступ к справочнику предпочтений через API.
-- Система партнера может вызвать наше API, передать туда промокод с описанием услуги и предпочтением, после чего наша система отправит его подходящим клиентам.
-- Система предоставляет закрытое CRUD API для работы с базой клиентов, в будущем менеджеры по работе с клиентами смогут наполнять базу через интерфейс, но пока это доступно только по API.
-- Также есть функционал работы с партнерами:
-  - для партнера устанавливаются лимиты на выдачу промокодов,
-  - если лимит превышен или закончился срок его действия, то промокод нельзя выдать.
+# Core Features
+- A partner manager of our company can log in to the PromoCodeFactory web application, select a preference from the list, and issue a promo code received from the partner. After that, the promo code will be issued to all customers in the customer database who have that preference.
+- A system administrator can:
+  - log in to the application,
+  - view the list of employees,
+  - create a new employee or edit the data of an existing one;
+  - view the number of promo codes issued by an employee in the employee's details;
+  - issue promo codes, just like a manager;
+  - cancel a partner's limit or set a new one.
+- Administrators and employees must authenticate.
+- A partner can create a new promo code for a preference through the API.
+- So that a partner can issue promo codes by preference through the API, we provide access to the preferences reference list via the API.
+- A partner's system can call our API, pass it a promo code along with a service description and a preference, after which our system will send it to the matching customers.
+- The system provides a private CRUD API for working with the customer database. In the future, customer relationship managers will be able to populate the database through the interface, but for now this is only available via the API.
+- There is also functionality for working with partners:
+  - limits on promo code issuance are set for each partner,
+  - if the limit is exceeded or has expired, the promo code cannot be issued.
 
-# Общая архитектура MVP
+# Overall MVP Architecture
 ![337460998-13b10f1b-d331-4ffb-ac2b-1d0cbf34b6de](https://github.com/user-attachments/assets/b3d5d6a5-20c5-40cb-afee-b16512382535)
 
-# Общая архитектура микросервисов
+# Overall Microservices Architecture
 ![337461037-a6c0d55a-6a84-470b-a67d-fef6b56d1104](https://github.com/user-attachments/assets/2bc2d6fe-5b0f-4e18-a943-c61f9e1efa28)
 
